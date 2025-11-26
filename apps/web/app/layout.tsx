@@ -30,7 +30,7 @@ const geist = Geist({
   display: "swap",
 });
 
-const title = "Angri | Automate and clean your inbox";
+const title = "Angri AI | Automate and clean your inbox";
 const description =
   "Your AI executive assistant to get the most out of time. Automate emails, bulk unsubscribe, block cold emails, and analytics. Open-source";
 
