@@ -12,8 +12,8 @@ import { Button } from "@/components/new-landing/common/Button";
 import { BlogHeader } from "@/components/layouts/BlogLayout";
 
 export const metadata: Metadata = {
-  title: "Open Source Friends | Inbox Zero",
-  description: "Some other great Open Source projects to follow",
+  title: "Vrienden | Angri",
+  description: "Andere geweldige Open Source projecten om te volgen",
   alternates: { canonical: "/oss-friends" },
 };
 
@@ -34,9 +34,9 @@ export default async function OSSFriendsPage() {
 
         <div className="mx-auto mt-20 max-w-6xl pb-10">
           <div className="text-center">
-            <PageHeading>Open Source Friends</PageHeading>
+            <PageHeading>Open Source Vrienden</PageHeading>
             <Paragraph className="mt-4">
-              Some other great Open Source projects to follow
+              Andere geweldige Open Source projecten om te volgen
             </Paragraph>
           </div>
           <div className="mt-20 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -52,7 +52,7 @@ export default async function OSSFriendsPage() {
                   <div className="mt-4">
                     <Button asChild>
                       <Link href={friend.href} target="_blank">
-                        Learn more
+                        Meer info
                       </Link>
                     </Button>
                   </div>
@@ -68,6 +68,6 @@ export default async function OSSFriendsPage() {
     );
   } catch (error) {
     console.error(error);
-    return <div>Error loading OSS Friends</div>;
+    return <div>Fout bij laden van OSS Vrienden</div>;
   }
 }

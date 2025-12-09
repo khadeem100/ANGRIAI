@@ -78,19 +78,19 @@ export const useNavigation = () => {
   const navItems: NavItem[] = useMemo(
     () => [
       {
-        name: "Assistant",
+        name: "Assistent",
         href: prefixPath(currentEmailAccountId, "/automation"),
         icon: SparklesIcon,
       },
       {
-        name: "Bulk Unsubscribe",
+        name: "Bulk Uitschrijven",
         href: prefixPath(currentEmailAccountId, "/bulk-unsubscribe"),
         icon: MailsIcon,
       },
       ...(isGoogleProvider(provider)
         ? [
             {
-              name: "Deep Clean",
+              name: "Opschonen",
               href: prefixPath(currentEmailAccountId, "/clean"),
               icon: BrushIcon,
             },
@@ -102,7 +102,7 @@ export const useNavigation = () => {
         icon: BarChartBigIcon,
       },
       {
-        name: "Calendars",
+        name: "Agenda's",
         href: prefixPath(currentEmailAccountId, "/calendars"),
         icon: CalendarIcon,
       },
@@ -132,17 +132,17 @@ const topMailLinks: NavItem[] = [
     href: "?type=inbox",
   },
   {
-    name: "Drafts",
+    name: "Concepten",
     icon: FileIcon,
     href: "?type=draft",
   },
   {
-    name: "Sent",
+    name: "Verzonden",
     icon: SendIcon,
     href: "?type=sent",
   },
   {
-    name: "Archived",
+    name: "Gearchiveerd",
     icon: ArchiveIcon,
     href: "?type=archive",
   },
@@ -150,12 +150,12 @@ const topMailLinks: NavItem[] = [
 
 const bottomMailLinks: NavItem[] = [
   {
-    name: "Personal",
+    name: "Persoonlijk",
     icon: PersonStandingIcon,
     href: "?type=CATEGORY_PERSONAL",
   },
   {
-    name: "Social",
+    name: "Sociaal",
     icon: Users2Icon,
     href: "?type=CATEGORY_SOCIAL",
   },
@@ -170,7 +170,7 @@ const bottomMailLinks: NavItem[] = [
     href: "?type=CATEGORY_FORUMS",
   },
   {
-    name: "Promotions",
+    name: "Reclame",
     icon: RatioIcon,
     href: "?type=CATEGORY_PROMOTIONS",
   },
@@ -188,7 +188,7 @@ export function SideNav({ ...props }: React.ComponentProps<typeof Sidebar>) {
       showMailNav
         ? [
             {
-              name: "Back",
+              name: "Terug",
               href: "/automation",
               icon: ArrowLeftIcon,
             },
@@ -240,7 +240,7 @@ export function SideNav({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </ClientOnly>
 
         <SidebarMenuButton asChild>
-          <Link href="https://docs.getinboxzero.com" target="_blank">
+          <Link href="https://docs.angri.nl" target="_blank">
             <BookIcon className="size-4" />
             <span className="font-semibold">Help Center</span>
           </Link>
@@ -249,7 +249,7 @@ export function SideNav({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenuButton asChild>
           <Link href={prefixPath(currentEmailAccountId, "/settings")}>
             <SettingsIcon className="size-4" />
-            <span className="font-semibold">Settings</span>
+            <span className="font-semibold">Instellingen</span>
           </Link>
         </SidebarMenuButton>
 
@@ -307,7 +307,7 @@ function MailNav({ path }: { path: string }) {
               sidebarName="left-sidebar"
             >
               <PenIcon className="size-4" />
-              <span className="truncate font-semibold">Compose</span>
+              <span className="truncate font-semibold">Opstellen</span>
               <CommandShortcut>C</CommandShortcut>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -318,7 +318,7 @@ function MailNav({ path }: { path: string }) {
         <SideNavMenu items={topMailLinks} activeHref={path} />
       </SidebarGroup>
       <SidebarGroup>
-        <SidebarGroupLabel>Categories</SidebarGroupLabel>
+        <SidebarGroupLabel>Categorieën</SidebarGroupLabel>
         <SideNavMenu items={bottomMailLinks} activeHref={path} />
       </SidebarGroup>
 
@@ -331,7 +331,7 @@ function MailNav({ path }: { path: string }) {
             <SideNavMenu items={labelNavItems} activeHref={path} />
           ) : (
             <div className="px-3 py-2 text-xs text-muted-foreground">
-              No {terminology.label.plural}
+              Geen {terminology.label.plural}
             </div>
           )}
 
@@ -348,7 +348,7 @@ function MailNav({ path }: { path: string }) {
                 ) : (
                   <ChevronRightIcon className="mr-1 size-4" />
                 )}
-                <span>More</span>
+                <span>Meer</span>
               </button>
 
               {showHiddenLabels && (

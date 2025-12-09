@@ -91,7 +91,7 @@ const createRawMailMessage = async (
       : "",
     inReplyTo: replyToEmail ? replyToEmail.headerMessageId : "",
     headers: {
-      "X-Mailer": "Inbox Zero Web",
+      "X-Mailer": "Angri Web",
     },
   });
 };

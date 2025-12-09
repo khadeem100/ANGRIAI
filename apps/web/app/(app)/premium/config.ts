@@ -21,10 +21,10 @@ const pricing: Record<PremiumTier, number> = {
   BASIC_ANNUALLY: 8,
   PRO_MONTHLY: 16,
   PRO_ANNUALLY: 10,
-  BUSINESS_MONTHLY: 20,
-  BUSINESS_ANNUALLY: 18,
-  BUSINESS_PLUS_MONTHLY: 50,
-  BUSINESS_PLUS_ANNUALLY: 42,
+  BUSINESS_MONTHLY: 10, //eerste card maand
+  BUSINESS_ANNUALLY: 100, // eerste card jaar
+  BUSINESS_PLUS_MONTHLY: 25, // tweede card maand
+  BUSINESS_PLUS_ANNUALLY: 250, // tweede card jaar
   COPILOT_MONTHLY: 500,
   LIFETIME: 299,
 };
@@ -136,25 +136,25 @@ const businessTier: Tier = {
     annually: discount(pricing.BUSINESS_MONTHLY, pricing.BUSINESS_ANNUALLY),
   },
   description:
-    "For individuals, entrepreneurs, and executives looking to buy back their time.",
+    "Voor individuen, ondernemers en leidinggevenden die tijd willen terugwinnen.",
   features: [
     {
-      text: "Sorts and labels every email",
+      text: "Sorteert en labelt elke e-mail",
     },
     {
-      text: "Drafts replies in your voice",
+      text: "Stelt antwoorden op in jouw stem",
     },
     {
-      text: "Blocks cold emails",
+      text: "Blokkeert koude e-mails",
     },
     {
-      text: "Bulk unsubscribe and archive emails",
+      text: "Bulk uitschrijven en e-mails archiveren",
     },
     {
-      text: "Email analytics",
+      text: "E-mail analytics",
     },
   ],
-  cta: "Try free for 7 days",
+  cta: "Probeer 14 dagen gratis",
   mostPopular: true,
 };
 
@@ -175,25 +175,25 @@ const businessPlusTier: Tier = {
       pricing.BUSINESS_PLUS_ANNUALLY,
     ),
   },
-  description: "For teams and growing businesses handling high email volumes.",
+  description: "Voor teams en groeiende bedrijven die veel e-mail verwerken.",
   features: [
     {
-      text: "Everything in Individual, plus:",
+      text: "Alles in Starter, plus:",
     },
     {
-      text: "Unlimited knowledge base",
+      text: "Onbeperkte kennisbank",
       tooltip:
-        "The knowledge base is used to help draft responses. Store up to unlimited content in your knowledge base.",
+        "De kennisbank wordt gebruikt om antwoorden op te stellen. Sla onbeperkt content op in je kennisbank.",
     },
-    { text: "Team-wide analytics" },
-    { text: "Priority support" },
+    { text: "Team-brede analytics" },
+    { text: "Prioriteit ondersteuning" },
     {
-      text: "Dedicated onboarding manager",
+      text: "Toegewijde onboarding manager",
       tooltip:
-        "We'll help you get set up on an onboarding call. Book as many free calls as needed.",
+        "We helpen je op weg met een onboarding call. Boek zoveel gratis gesprekken als nodig.",
     },
   ],
-  cta: "Try free for 7 days",
+  cta: "Probeer 14 dagen gratis",
   mostPopular: false,
 };
 
@@ -206,26 +206,26 @@ const enterpriseTier: Tier = {
   price: { monthly: 0, annually: 0 },
   discount: { monthly: 0, annually: 0 },
   description:
-    "For organizations with enterprise-grade security and compliance requirements.",
+    "Voor organisaties met beveiliging en compliance-eisen op enterprise-niveau.",
   features: [
     {
-      text: "Everything in Team, plus:",
+      text: "Alles in Professional, plus:",
     },
     {
-      text: "SSO login",
+      text: "SSO inloggen",
     },
     {
-      text: "On-premise deployment (optional)",
+      text: "On-premise implementatie (optioneel)",
     },
     {
-      text: "Advanced security & SLA",
+      text: "Geavanceerde beveiliging & SLA",
     },
     {
-      text: "Dedicated account manager & training",
+      text: "Toegewijde accountmanager & training",
     },
   ],
-  cta: "Speak to sales",
-  ctaLink: "https://go.getinboxzero.com/sales",
+  cta: "Praat met sales",
+  ctaLink: "https://angri.nl/sales",
   mostPopular: false,
 };
 

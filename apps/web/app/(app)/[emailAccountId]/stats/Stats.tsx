@@ -118,7 +118,7 @@ export function Stats() {
 
         <CardBasic>
           <Title>
-            How many emailers you've handled with Inbox Zero bulk unsubscribe
+            How many emailers you've handled with Angri bulk unsubscribe
           </Title>
           <div className="mt-2">
             <BulkUnsubscribeSummary />

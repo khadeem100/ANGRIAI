@@ -13,60 +13,60 @@ import { env } from "@/env";
 
 const faqs = [
   {
-    question: "Which email providers does Inbox Zero support?",
+    question: "Welke e-mailproviders ondersteunt Angri?",
     answer:
-      "We support Gmail, Google Workspace, and Microsoft Outlook email accounts.",
+      "We ondersteunen Gmail, Google Workspace en Microsoft Outlook. We werken hard aan het toevoegen van meer providers.",
   },
   {
-    question: "How can I request a feature?",
+    question: "Hoe kan ik een functie aanvragen?",
     answer: (
       <span>
-        Email us or post an issue on{" "}
-        <Anchor href="/github" newTab>
-          GitHub
+        Mail ons of meld een issue op{" "}
+        <Anchor href="/contact" newTab>
+          onze rapportage-pagina
         </Anchor>
-        . We're happy to hear how we can improve your email experience.
+        . We horen graag hoe we jouw e-mailervaring kunnen verbeteren.
       </span>
     ),
   },
   {
-    question: "Will Inbox Zero replace my current email client?",
+    question: "Vervangt Angri mijn huidige e-mailprogramma?",
     answer:
-      "No! Inbox Zero isn't an email client. It's used alongside your existing email client. You use Google or Outlook as normal.",
+      "Nee! Angri is geen e-mailprogramma. Je gebruikt het naast je huidige client. Je kunt Google of Outlook gewoon blijven gebruiken.",
   },
   {
-    question: "Is the code open-source?",
+    question: "Is de code open-source?",
     answer: (
       <span>
-        Yes! You can see the entire source code for the inbox zero app in our{" "}
-        <Anchor href="/github" newTab>
-          GitHub repo
-        </Anchor>
-        .
+        Nee! Maar je kunt contact opnemen met onze{" "}
+        <Anchor href="http://www.tynktech.nl" newTab>
+          sales-afdeling
+        </Anchor>{" "}
+        voor een enterprise-licentie om Angri op je eigen omgeving te hosten.
       </span>
     ),
   },
   {
-    question: "Do you offer refunds?",
+    question: "Bieden jullie refunds aan?",
     answer: (
       <span>
-        Yes, if you don't think we provided you with value send us an{" "}
-        <Anchor href={`mailto:${env.NEXT_PUBLIC_SUPPORT_EMAIL}`}>email</Anchor>{" "}
-        within 14 days of upgrading and we'll refund you.
+        Ja, als je vindt dat we geen waarde hebben toegevoegd, stuur ons dan een{" "}
+        <Anchor href={`mailto:${env.NEXT_PUBLIC_SUPPORT_EMAIL}`}>mail</Anchor>{" "}
+        binnen 14 dagen na het upgraden en we storten je geld terug.
       </span>
     ),
   },
   {
-    question: "Can I try Inbox Zero for free?",
+    question: "Kan ik Angri gratis proberen?",
     answer:
-      "Absolutely, we have a 7 day free trial on all of our plans so you can try it out right away, no credit card needed!",
+      "Absoluut, we hebben een gratis proefperiode van 14 dagen op al onze abonnementen, zodat je het direct kunt proberen, zonder creditcard!",
   },
 ];
 
 export function FAQs() {
   return (
     <Section>
-      <SectionHeading>Frequently asked questions</SectionHeading>
+      <SectionHeading>Veelgestelde vragen</SectionHeading>
       <SectionContent>
         <CardWrapper>
           <dl className="grid md:grid-cols-2 gap-6">

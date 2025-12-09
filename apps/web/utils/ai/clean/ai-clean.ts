@@ -39,7 +39,7 @@ export async function aiClean({
   if (!lastMessage) throw new Error("No messages");
 
   const system =
-    `You are an AI assistant designed to help users achieve inbox zero by analyzing emails and deciding whether they should be archived or not.
+    `You are an AI assistant designed to help users achieve Angri by analyzing emails and deciding whether they should be archived or not.
   
 Examples of emails to archive:
 - Newsletters

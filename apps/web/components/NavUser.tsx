@@ -113,7 +113,7 @@ export function NavUser() {
                 href={prefixPath(currentEmailAccountId, "/organization/create")}
               >
                 <Building2Icon className="mr-2 size-4" />
-                Create organization
+                Organisatie aanmaken
               </Link>
             </DropdownMenuItem>
           )}
@@ -121,7 +121,7 @@ export function NavUser() {
             <DropdownMenuItem asChild>
               <Link href={prefixPath(currentEmailAccountId, "/organization")}>
                 <Building2Icon className="mr-2 size-4" />
-                My Organization
+                Mijn Organisatie
               </Link>
             </DropdownMenuItem>
           )}
@@ -133,7 +133,7 @@ export function NavUser() {
                 rel="noopener noreferrer"
               >
                 <ChromeIcon className="mr-2 size-4" />
-                Install extension
+                Installeer extensie
               </Link>
             </DropdownMenuItem>
           )}
@@ -172,7 +172,7 @@ export function NavUser() {
           <DropdownMenuItem asChild>
             <Link href={prefixPath(currentEmailAccountId, "/usage")}>
               <BarChartIcon className="mr-2 size-4" />
-              Usage
+              Gebruik
             </Link>
           </DropdownMenuItem>
 
@@ -192,13 +192,13 @@ export function NavUser() {
           }}
         >
           <PaletteIcon className="mr-2 size-4" />
-          {theme === "dark" ? "Light mode" : "Dark mode"}
+          {theme === "dark" ? "Lichte modus" : "Donkere modus"}
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={() => logOut(window.location.origin)}>
           <LogOutIcon className="mr-2 size-4" />
-          Sign out
+          Uitloggen
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

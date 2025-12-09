@@ -25,6 +25,7 @@ import type { MessageContext } from "@/app/api/chat/validation";
 import { stringifyEmail } from "@/utils/stringify-email";
 import { getEmailForLLM } from "@/utils/get-email-from-message";
 import type { ParsedMessage } from "@/utils/types";
+import { createEmailProvider } from "@/utils/email/provider";
 
 const logger = createScopedLogger("ai/assistant/chat");
 
@@ -654,6 +655,100 @@ export type AddToKnowledgeBaseTool = InferUITool<
   ReturnType<typeof addToKnowledgeBaseTool>
 >;
 
+const searchEmailsTool = ({
+  email,
+  emailAccountId,
+  provider,
+}: {
+  email: string;
+  emailAccountId: string;
+  provider: string;
+}) =>
+  tool({
+    name: "searchEmails",
+    description: "Search for specific emails in the user's inbox",
+    inputSchema: z.object({
+      query: z
+        .string()
+        .describe(
+          "The search query. For Gmail, supports standard operators like 'from:alice', 'subject:meeting', 'after:2023/01/01'.",
+        ),
+      maxResults: z.number().optional().default(5),
+    }),
+    execute: async ({ query, maxResults }) => {
+      trackToolCall({ tool: "search_emails", email });
+
+      try {
+        const emailProvider = await createEmailProvider({
+          emailAccountId,
+          provider,
+        });
+
+        const result = await emailProvider.getMessagesWithPagination({
+          query,
+          maxResults,
+        });
+
+        // Parse emails for LLM consumption to reduce token usage
+        const parsedMessages = result.messages.map((msg) =>
+          getEmailForLLM(msg, { maxLength: 2000 }),
+        );
+
+        return {
+          messages: parsedMessages,
+          count: parsedMessages.length,
+        };
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        logger.error("Failed to search emails", { error: message });
+        return { error: "Failed to search emails", message };
+      }
+    },
+  });
+
+export type SearchEmailsTool = InferUITool<ReturnType<typeof searchEmailsTool>>;
+
+const replyToEmailTool = ({
+  email,
+  emailAccountId,
+  provider,
+}: {
+  email: string;
+  emailAccountId: string;
+  provider: string;
+}) =>
+  tool({
+    name: "replyToEmail",
+    description: "Reply to an existing email",
+    inputSchema: z.object({
+      messageId: z.string().describe("The ID of the message to reply to"),
+      content: z.string().describe("The content of the reply"),
+    }),
+    execute: async ({ messageId, content }) => {
+      trackToolCall({ tool: "reply_to_email", email });
+
+      try {
+        const emailProvider = await createEmailProvider({
+          emailAccountId,
+          provider,
+        });
+
+        // First fetch the message to ensure it exists and get necessary details
+        const message = await emailProvider.getMessage(messageId);
+
+        await emailProvider.replyToEmail(message, content);
+
+        return { success: true };
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        logger.error("Failed to reply to email", { error: message });
+        return { error: "Failed to reply to email", message };
+      }
+    },
+  });
+
+export type ReplyToEmailTool = InferUITool<ReturnType<typeof replyToEmailTool>>;
+
 export async function aiProcessAssistantChat({
   messages,
   emailAccountId,
@@ -665,14 +760,17 @@ export async function aiProcessAssistantChat({
   user: EmailAccountWithAI;
   context?: MessageContext;
 }) {
-  const system = `You are an assistant that helps create and update rules to manage a user's inbox. Our platform is called Inbox Zero.
+  const system = `You are an assistant that helps create and update rules to manage a user's inbox. Our platform is called Angri.
   
-You can't perform any actions on their inbox.
-You can only adjust the rules that manage the inbox.
+You can perform any actions on their inbox.
+You can adjust the rules that manage the inbox.
 
 A rule is comprised of:
 1. A condition
 2. A set of actions
+
+You can also search for specific emails in the user's inbox if they ask about them.
+You can also reply to specific emails if the user asks you to.
 
 A condition can be:
 1. AI instructions
@@ -710,7 +808,7 @@ Use simple language and avoid jargon in your reply.
 If you are unable to fix the rule, say so.
 
 You can set general infomation about the user too that will be passed as context when the AI is processing emails.
-Reply Zero is a feature that labels emails that need a reply "To Reply". And labels emails that are awaiting a response "Awaiting". The also is also able to see these in a minimalist UI within Inbox Zero which only shows which emails the user needs to reply to or is awaiting a response on.
+Reply Zero is a feature that labels emails that need a reply "To Reply". And labels emails that are awaiting a response "Awaiting". The also is also able to see these in a minimalist UI within Angri which only shows which emails the user needs to reply to or is awaiting a response on.
 Don't tell the user which tools you're using. The tools you use will be displayed in the UI anyway.
 Don't use placeholders in rules you create. For example, don't use @company.com. Use the user's actual company email address. And if you don't know some information you need, ask the user.
 
@@ -839,7 +937,7 @@ Examples:
       Set a rule to archive emails older than 30 days.
     </input>
     <output>
-      Inbox Zero doesn't support time-based actions yet. We only process emails as they arrive in your inbox.
+      Angri doesn't support time-based actions yet. We only process emails as they arrive in your inbox.
     </output>
   </example>
 
@@ -971,6 +1069,8 @@ Examples:
       updateLearnedPatterns: updateLearnedPatternsTool(toolOptions),
       updateAbout: updateAboutTool(toolOptions),
       addToKnowledgeBase: addToKnowledgeBaseTool(toolOptions),
+      searchEmails: searchEmailsTool(toolOptions),
+      replyToEmail: replyToEmailTool(toolOptions),
     },
   });
 

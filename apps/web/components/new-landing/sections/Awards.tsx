@@ -23,30 +23,16 @@ type Award = {
 
 const awards: Award[] = [
   {
-    title: "SOC2 Compliant",
-    description: "Enterprise-grade security. SOC 2 Type 2 certified",
+    title: "SOC2 Gecertificeerd",
+    description:
+      "Beveiliging op enterprise-niveau. SOC 2 Type 2 gecertificeerd",
     image: "/images/new-landing/awards/soc-award.png",
   },
   {
-    title: "#1 GitHub Trending",
-    description: "Trusted and loved by developers worldwide",
-    image: "/images/new-landing/awards/github-trending-award.png",
-    imageSize: 160,
-    top: "top-2",
-    hideOnMobile: true,
-  },
-  {
     title: "#1 Product Hunt",
-    description: "Product of the Day on Product Hunt",
+    description: "Product van de Dag op Product Hunt",
     image: "/images/new-landing/awards/product-hunt-award.png",
     imageSize: 170,
-  },
-  {
-    title: "9k GitHub Stars",
-    description: "Open-source. See exactly what the code does",
-    image: "/images/new-landing/awards/github-stars-award.png",
-    imageSize: 170,
-    top: "top-3",
   },
 ];
 
@@ -55,22 +41,27 @@ const defaultAwardImageSize = 200;
 export function Awards() {
   return (
     <Section>
-      <SectionHeading>Privacy first and open source</SectionHeading>
+      <SectionHeading>Privacy eerst</SectionHeading>
       <SectionSubtitle>
-        Your data stays private — no AI training, no funny business. We’re fully
-        certified for top-tier security, and you can even self-host Inbox Zero
-        if you want total control.
+        Jouw data blijft privé — geen AI-training, geen gekke dingen. We zijn
+        volledig gecertificeerd voor top-tier beveiliging, en je kunt Angri
+        zelfs zelf hosten als je volledige controle wilt.
       </SectionSubtitle>
       <SectionContent
         noMarginTop
         className="mt-20 gap-x-5 gap-y-20 lg:gap-y-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4"
       >
-        {awards.map((award) => (
+        {awards.map((award, i) => (
           <CardWrapper
             padding="sm"
             rounded="sm"
             key={award.title}
-            className={cn(award.hideOnMobile && "hidden md:block")}
+            className={cn(
+              award.hideOnMobile && "hidden md:block",
+              // place first award in column 2 and second award in column 3 on large screens
+              i === 0 && "lg:col-start-2 lg:col-end-3",
+              i === 1 && "lg:col-start-3 lg:col-end-4",
+            )}
           >
             <Card
               variant="extra-rounding"

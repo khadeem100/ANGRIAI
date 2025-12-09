@@ -81,8 +81,12 @@ COPY --from=builder /app/apps/web/prisma ./apps/web/prisma
 COPY docker/scripts /app/docker/scripts
 RUN chmod +x /app/docker/scripts/*.sh
 
+# Ensure nextjs app is owned by node user so it can be modified at runtime
+RUN chown -R node:node /app/apps/web/.next
+
 EXPOSE 3000
 
 # Default command runs the Next.js server from the standalone bundle
+USER node
 CMD ["/app/docker/scripts/start.sh"]
 # Cache bust Fri Nov 21 17:08:13 IST 2025

@@ -60,28 +60,28 @@ export function LoginForm() {
                 height={24}
                 unoptimized
               />
-              <span className="ml-2">Sign in with Google</span>
+              <span className="ml-2">Inloggen met Google</span>
             </span>
           </Button>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Sign in</DialogTitle>
+            <DialogTitle>Inloggen</DialogTitle>
           </DialogHeader>
           <SectionDescription>
-            Inbox Zero{"'"}s use and transfer of information received from
-            Google APIs to any other app will adhere to{" "}
+            Het gebruik en de overdracht door Angri AI van informatie ontvangen
+            van Google API's aan een andere app voldoet aan het{" "}
             <a
               href="https://developers.google.com/terms/api-services-user-data-policy"
               className="underline underline-offset-4 hover:text-gray-900"
             >
               Google API Services User Data
             </a>{" "}
-            Policy, including the Limited Use requirements.
+            Policy, inclusief de Limited Use-vereisten.
           </SectionDescription>
           <div>
             <Button loading={loadingGoogle} onClick={handleGoogleSignIn}>
-              I agree
+              Ik ga akkoord
             </Button>
           </div>
         </DialogContent>
@@ -100,7 +100,7 @@ export function LoginForm() {
             height={24}
             unoptimized
           />
-          <span className="ml-2">Sign in with Microsoft</span>
+          <span className="ml-2">Inloggen met Microsoft</span>
         </span>
       </Button>
 
@@ -110,7 +110,7 @@ export function LoginForm() {
         className="w-full hover:scale-105 transition-transform"
         asChild
       >
-        <Link href="/login/sso">Sign in with SSO</Link>
+        <Link href="/login/sso">Inloggen met SSO</Link>
       </UIButton>
     </div>
   );

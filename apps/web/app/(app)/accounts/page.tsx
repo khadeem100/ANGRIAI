@@ -120,8 +120,8 @@ function AccountItem({
           title="Delete Account"
           description={
             emailAccount.isPrimary
-              ? `Are you sure you want to delete "${emailAccount.email}"? This is your primary account. You will be logged out and need to log in again. Your oldest remaining account will become your new primary account. All data for "${emailAccount.email}" will be permanently deleted from Inbox Zero.`
-              : `Are you sure you want to delete "${emailAccount.email}"? This will delete all data for it on Inbox Zero.`
+              ? `Are you sure you want to delete "${emailAccount.email}"? This is your primary account. You will be logged out and need to log in again. Your oldest remaining account will become your new primary account. All data for "${emailAccount.email}" will be permanently deleted from Angri.`
+              : `Are you sure you want to delete "${emailAccount.email}"? This will delete all data for it on Angri.`
           }
           confirmText="Delete"
           onConfirm={() => {
@@ -151,12 +151,12 @@ function useAccountNotifications() {
         account_not_found_for_merge: {
           title: "Account not found",
           description:
-            "This account doesn't exist in Inbox Zero yet. Please select 'No, it's a new account' instead.",
+            "This account doesn't exist in Angri yet. Please select 'No, it's a new account' instead.",
         },
         account_already_exists_use_merge: {
           title: "Account already exists",
           description:
-            "This account already exists in Inbox Zero. Please select 'Yes, it's an existing Inbox Zero account' to merge.",
+            "This account already exists in Angri. Please select 'Yes, it's an existing Angri account' to merge.",
         },
         already_linked_to_self: {
           title: "Account already linked",

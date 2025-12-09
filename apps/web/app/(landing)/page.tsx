@@ -13,29 +13,96 @@ import { FAQs } from "@/app/(landing)/home/FAQs";
 import { FinalCTA } from "@/app/(landing)/home/FinalCTA";
 import { WordReveal } from "@/components/new-landing/common/WordReveal";
 import { BrandScroller } from "@/components/new-landing/BrandScroller";
+import { WelcomePopup } from "@/components/new-landing/WelcomePopup";
 
-export const metadata: Metadata = { alternates: { canonical: "/" } };
+export const metadata: Metadata = {
+  title: "Angri - #1 AI Email Assistent | Bereik Inbox Zero in Minuten",
+  description:
+    "Stop met verdrinken in e-mail. Angri gebruikt geavanceerde AI om je inbox te organiseren, e-mails automatisch te beantwoorden en spam te verwijderen. Probeer het gratis.",
+  keywords: [
+    // Core Product
+    "AI email assistent",
+    "inbox zero",
+    "email management software",
+    "email automatisering",
+    "automatisch beantwoorden",
+    "email opruimen",
+
+    // Features
+    "automatisch uitschrijven",
+    "nieuwsbrieven beheren",
+    "koude email blokkeren",
+    "AI email schrijver",
+    "email templates",
+    "bulk archiveren",
+
+    // Audience/Niche
+    "email voor ondernemers",
+    "email voor bedrijven",
+    "email productiviteit",
+    "zakelijke email tool",
+
+    // Brand & Tech
+    "angri",
+    "angri ai",
+    "tynktech",
+    "nederlandse AI software",
+    "veilig emailen",
+    "AVG proof email tool",
+    "privacy first email",
+  ],
+  alternates: { canonical: "https://angri.nl" },
+  openGraph: {
+    title: "Angri - #1 AI Email Assistent | Bereik Inbox Zero in Minuten",
+    description:
+      "Stop met verdrinken in e-mail. Angri gebruikt geavanceerde AI om je inbox te organiseren, e-mails automatisch te beantwoorden en spam te verwijderen.",
+    url: "https://angri.nl",
+    siteName: "Angri AI",
+    locale: "nl_NL",
+    type: "website",
+    images: [
+      {
+        url: "/opengraph-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Angri AI Email Assistent Dashboard",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Angri - #1 AI Email Assistent",
+    description:
+      "Bereik Inbox Zero met Angri. Automatiseer je e-mails en bespaar uren per week.",
+    creator: "@inboxzero_ai", // Consider changing to @angri_ai if applicable
+    images: ["/opengraph-image.png"],
+  },
+};
 
 export default function NewLanding() {
   return (
     <BasicLayout>
+      <WelcomePopup />
       <Hero
         title={
           <WordReveal
             spaceBetween="w-2 md:w-3"
             words={[
-              "Meet",
-              "your",
-              "AI",
-              "email",
-              "assistant",
-              "that",
-              <em key="actually">actually</em>,
-              "works",
+              "Maak",
+              "kennis",
+              "met",
+              <em key="ANGRI">ANGRI,</em>,
+              "de",
+              "AI-emailassistent",
+              "die",
+              <em key="actually">werkelijk</em>,
+              "voor",
+              "je",
+              "werkt",
             ]}
           />
         }
-        subtitle=" Inbox Zero organizes your inbox, drafts replies in your voice, and helps you reach inbox zero fast. Never miss an important email again."
+        subtitle="Angri AI organiseert je inbox, stelt antwoorden op in jouw stem, en helpt je snel inbox zero te bereiken. Mis nooit meer een belangrijke e-mail."
       >
         <HeroVideoPlayer />
         <BrandScroller />
@@ -43,20 +110,20 @@ export default function NewLanding() {
       <OrganizedInbox
         title={
           <>
-            Automatically organized.
+            Automatisch georganiseerd.
             <br />
-            Never miss an important email again.
+            Mis nooit meer een belangrijke e-mail.
           </>
         }
-        subtitle="Drowning in emails? Don't waste energy trying to prioritize your emails. Our AI assistant will label everything automatically."
+        subtitle="Verdrink je in e-mails? Verspil geen energie aan het prioriteren. Onze AI-assistent labelt alles automatisch."
       />
       <PreWrittenDrafts
-        title="Pre-written drafts waiting in your inbox"
-        subtitle="When you check your inbox, every email needing a response will have a pre-drafted reply in your tone, ready for you to send."
+        title="Voorgeschreven concepten wachten in je inbox"
+        subtitle="Wanneer je je inbox checkt, heeft elke e-mail die een antwoord nodig heeft al een concept klaarstaan in jouw toon, klaar om te verzenden."
       />
       <StartedInMinutes
-        title="Get started in minutes"
-        subtitle="One-click setup. Start organizing and drafting replies in minutes."
+        title="Begin binnen enkele minuten"
+        subtitle="Installatie met één klik. Begin binnen enkele minuten met organiseren en antwoorden."
       />
       <BulkUnsubscribe />
       <EverythingElseSection />

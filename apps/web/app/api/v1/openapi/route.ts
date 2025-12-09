@@ -31,7 +31,7 @@ registry.registerPath({
       groupId: z
         .string()
         .describe(
-          "You can find the group id by going to `https://www.getinboxzero.com/automation?tab=groups`, clicking `Matching Emails`, and then copying the id from the URL.",
+          "You can find the group id by going to `https://www.angri.nl/automation?tab=groups`, clicking `Matching Emails`, and then copying the id from the URL.",
         ),
     }),
     query: groupEmailsQuerySchema,
@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
   const docs = generator.generateDocument({
     openapi: "3.1.0",
     info: {
-      title: "Inbox Zero API",
+      title: "Angri API",
       version: "1.0.0",
     },
     servers: [
@@ -64,7 +64,7 @@ export async function GET(request: NextRequest) {
         ? [{ url: `${customHost}/api/v1`, description: "Custom host" }]
         : []),
       {
-        url: "https://getinboxzero.com/api/v1",
+        url: "https://angri.nl/api/v1",
         description: "Production server",
       },
       { url: "http://localhost:3000/api/v1", description: "Local development" },

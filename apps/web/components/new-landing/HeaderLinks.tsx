@@ -22,15 +22,20 @@ import {
 
 const navigation = [
   { name: "Enterprise", href: "/enterprise" },
-  { name: "Open Source", href: "/github", target: "_blank" as const },
-  { name: "Pricing", href: "/#pricing" },
+  {
+    name: "Bedrijf",
+    href: "https://www.tynktech.nl",
+    target: "_blank" as const,
+  },
+  { name: "Prijzen", href: "/#pricing" },
+  { name: "Beveiliging", href: "/security" },
 ];
 
 const useCases = [
   {
     title: "Founders",
     href: "/founders",
-    description: "Scale your startup while AI handles your inbox",
+    description: "Schaal je startup terwijl AI je inbox beheert",
     icon: RocketIcon,
     iconColor: "text-[#6410FF]",
     borderColor: "from-[#E1D5FC] to-[#D7C3FC]",
@@ -38,9 +43,9 @@ const useCases = [
     hoverBg: "hover:bg-[#F3EAFE70]",
   },
   {
-    title: "Small Business",
+    title: "MKB",
     href: "/small-business",
-    description: "Grow your business with automated email management",
+    description: "Laat je bedrijf groeien met geautomatiseerd e-mailbeheer",
     icon: BuildingIcon,
     iconColor: "text-[#30A24B]",
     borderColor: "from-[#DDF4D3] to-[#CFF4C0]",
@@ -50,7 +55,7 @@ const useCases = [
   {
     title: "Content Creators",
     href: "/creator",
-    description: "Streamline brand partnerships and collaborations",
+    description: "Stroomlijn partnerschappen en samenwerkingen",
     icon: UserIcon,
     iconColor: "text-[#006EFF]",
     borderColor: "from-[#D6E8FC] to-[#C3DEFC]",
@@ -58,9 +63,9 @@ const useCases = [
     hoverBg: "hover:bg-[#EFF6FF80]",
   },
   {
-    title: "Real Estate",
+    title: "Vastgoed",
     href: "/real-estate",
-    description: "AI email management for real estate professionals",
+    description: "AI-e-mailbeheer voor vastgoedprofessionals",
     icon: HomeIcon,
     iconColor: "text-[#C942B2]",
     borderColor: "from-[#FDD3EB] to-[#FDBFE0]",
@@ -68,9 +73,9 @@ const useCases = [
     hoverBg: "hover:bg-[#FFEEF870]",
   },
   {
-    title: "Customer Support",
+    title: "Klantenservice",
     href: "/support",
-    description: "Deliver faster support with AI-powered responses",
+    description: "Lever snellere ondersteuning met AI-gestuurde antwoorden",
     icon: HeadphonesIcon,
     iconColor: "text-[#E65707]",
     borderColor: "from-[#FCE2D5] to-[#FCD6C2]",
@@ -80,7 +85,7 @@ const useCases = [
   {
     title: "E-commerce",
     href: "/ecommerce",
-    description: "Automate order updates and customer communications",
+    description: "Automatiseer bestelupdates en klantcommunicatie",
     icon: ShoppingCartIcon,
     iconColor: "text-[#124DFF]",
     borderColor: "from-[#D5DEFC] to-[#C2D0FC]",
@@ -97,7 +102,7 @@ export function HeaderLinks() {
           {/* Solutions Dropdown */}
           <NavigationMenuItem>
             <NavigationMenuTrigger className="text-sm font-semibold font-geist leading-6 text-gray-900">
-              Solutions
+              Oplossingen
             </NavigationMenuTrigger>
             <NavigationMenuContent>
               <ul className="grid w-[640px] grid-cols-2 gap-2 p-4">

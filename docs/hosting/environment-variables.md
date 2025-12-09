@@ -73,7 +73,7 @@ cp apps/web/.env.example apps/web/.env
 | **Resend** ||||
 | `RESEND_API_KEY` | No | API key for transactional emails | — |
 | `RESEND_AUDIENCE_ID` | No | Audience ID for contacts | — |
-| `RESEND_FROM_EMAIL` | No | From email address | `Inbox Zero <updates@transactional.getinboxzero.com>` |
+| `RESEND_FROM_EMAIL` | No | From email address | `Inbox Zero <updates@transactional.angri.nl>` |
 | **Other** ||||
 | `CRON_SECRET` | No | Secret for cron job authentication | — |
 | `HEALTH_API_KEY` | No | API key for health checks | — |

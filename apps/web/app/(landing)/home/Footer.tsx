@@ -4,7 +4,7 @@ import { EXTENSION_URL } from "@/utils/config";
 const navigation = {
   main: [
     {
-      name: "Inbox Zero Tabs (Chrome Extension)",
+      name: "Angri Tabs (Chrome Extension)",
       href: EXTENSION_URL,
       target: "_blank",
     },
@@ -14,7 +14,6 @@ const navigation = {
     { name: "Clean your inbox", href: "/clean-inbox" },
     { name: "Cold Email Blocker", href: "/block-cold-emails" },
     { name: "Email Analytics", href: "/email-analytics" },
-    { name: "Open Source", href: "/github", target: "_blank" },
   ],
   useCases: [
     { name: "Founder", href: "/founders" },
@@ -33,10 +32,10 @@ const navigation = {
   ],
   support: [
     { name: "Pricing", href: "/#pricing" },
-    { name: "Contact", href: "mailto:elie@getinboxzero.com", target: "_blank" },
+    { name: "Contact", href: "mailto:admin@thynktech.nl", target: "_blank" },
     {
       name: "Documentation",
-      href: "https://docs.getinboxzero.com",
+      href: "https://docs.thynktech.nl",
       target: "_blank",
     },
     { name: "Feature Requests", href: "/feature-requests", target: "_blank" },
@@ -62,7 +61,7 @@ const navigation = {
     { name: "Privacy", href: "/privacy" },
     {
       name: "SOC2 Compliant",
-      href: "https://security.getinboxzero.com",
+      href: "https://security.thynktech.nl",
       target: "_blank",
     },
     { name: "Sitemap", href: "/sitemap.xml" },
@@ -150,7 +149,7 @@ export function Footer() {
           ))}
         </div>
         <p className="mt-10 text-center text-xs leading-5 text-gray-500">
-          &copy; {new Date().getFullYear()} Inbox Zero Inc. All rights reserved.
+          &copy; {new Date().getFullYear()} V.O.F TynkTech. All rights reserved.
         </p>
       </div>
     </footer>

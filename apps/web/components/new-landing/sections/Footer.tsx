@@ -9,46 +9,45 @@ import { UnicornScene } from "@/components/new-landing/UnicornScene";
 const navigation = {
   main: [
     {
-      name: "Inbox Zero Tabs (Chrome Extension)",
+      name: "Angri Tabs (Chrome Extensie)",
       href: EXTENSION_URL,
       target: "_blank",
     },
-    { name: "AI Email Assistant", href: "/ai-automation" },
+    { name: "AI E-mail Assistent", href: "/ai-automation" },
     { name: "Reply Zero", href: "/reply-zero-ai" },
-    { name: "Bulk Email Unsubscriber", href: "/bulk-email-unsubscriber" },
-    { name: "Clean your inbox", href: "/clean-inbox" },
+    { name: "Bulk E-mail Uitschrijven", href: "/bulk-email-unsubscriber" },
+    { name: "Schoon je inbox op", href: "/clean-inbox" },
     { name: "Cold Email Blocker", href: "/block-cold-emails" },
-    { name: "Email Analytics", href: "/email-analytics" },
-    { name: "Open Source", href: "/github", target: "_blank" },
+    { name: "E-mail Analytics", href: "/email-analytics" },
   ],
   useCases: [
     { name: "Founder", href: "/founders" },
-    { name: "Small Business", href: "/small-business" },
-    { name: "Content Creator", href: "/creator" },
-    { name: "Realtor", href: "/real-estate" },
-    { name: "Customer Support", href: "/support" },
+    { name: "MKB", href: "/small-business" },
+    { name: "Content Maker", href: "/creator" },
+    { name: "Makelaar", href: "/real-estate" },
+    { name: "Klantenservice", href: "/support" },
     { name: "E-commerce", href: "/ecommerce" },
   ],
   support: [
-    { name: "Pricing", href: "/#pricing" },
-    { name: "Contact", href: "mailto:elie@getinboxzero.com", target: "_blank" },
+    { name: "Prijzen", href: "/#pricing" },
+    { name: "Contact", href: "mailto:admin@angri.nl", target: "_blank" },
     {
-      name: "Documentation",
-      href: "https://docs.getinboxzero.com",
+      name: "Documentatie",
+      href: "https://docs.angri.nl",
       target: "_blank",
     },
-    { name: "Feature Requests", href: "/feature-requests", target: "_blank" },
+    { name: "Functie-aanvragen", href: "/feature-requests", target: "_blank" },
     { name: "Changelog", href: "/changelog", target: "_blank" },
     {
       name: "Status",
-      href: "https://inbox-zero.openstatus.dev/",
+      href: "https://angri.openstatus.dev/",
       target: "_blank",
     },
   ],
   company: [
     { name: "Affiliates", href: "/affiliates", target: "_blank" },
     { name: "Blog", href: "/blog" },
-    { name: "Case Studies", href: "/case-studies" },
+    { name: "Klantverhalen", href: "/case-studies" },
     { name: "Twitter", href: "/twitter", target: "_blank" },
     { name: "GitHub", href: "/github", target: "_blank" },
     { name: "Discord", href: "/discord", target: "_blank" },
@@ -56,11 +55,11 @@ const navigation = {
     { name: "Email Blaster", href: "/game" },
   ],
   legal: [
-    { name: "Terms", href: "/terms" },
+    { name: "Voorwaarden", href: "/terms" },
     { name: "Privacy", href: "/privacy" },
     {
-      name: "SOC2 Compliant",
-      href: "https://security.getinboxzero.com",
+      name: "SOC2 Gecertificeerd",
+      href: "https://security.angri.nl",
       target: "_blank",
     },
     { name: "Sitemap", href: "/sitemap.xml" },
@@ -146,18 +145,18 @@ export function Footer({ className, variant = "default" }: FooterProps) {
             <FooterList title="Product" items={navigation.main} />
           </div>
           <div>
-            <FooterList title="Use Cases" items={navigation.useCases} />
+            <FooterList title="Gebruik" items={navigation.useCases} />
           </div>
           <div>
             <FooterList title="Support" items={navigation.support} />
           </div>
           <div>
-            <FooterList title="Company" items={navigation.company} />
+            <FooterList title="Bedrijf" items={navigation.company} />
           </div>
           <div>
-            <FooterList title="Legal" items={navigation.legal} />
+            <FooterList title="Juridisch" items={navigation.legal} />
             <div className="mt-6">
-              <FooterList title="Compare" items={navigation.compare} />
+              <FooterList title="Vergelijk" items={navigation.compare} />
             </div>
           </div>
         </div>

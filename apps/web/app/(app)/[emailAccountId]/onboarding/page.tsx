@@ -7,8 +7,8 @@ import { fetchUserAndStoreUtms } from "@/app/(landing)/welcome/utms";
 import { auth } from "@/utils/auth";
 
 export const metadata: Metadata = {
-  title: "Onboarding | Inbox Zero",
-  description: "Learn how Inbox Zero works and get set up.",
+  title: "Onboarding | Angri AI",
+  description: "Learn how Angri AI works and get set up.",
   alternates: { canonical: "/onboarding" },
 };
 

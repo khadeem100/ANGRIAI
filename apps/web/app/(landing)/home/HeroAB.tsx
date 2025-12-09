@@ -15,9 +15,9 @@ const copy: {
   };
 } = {
   control: {
-    title: "Meet Your AI Email Assistant That Actually Works",
+    title: "Meet Your AI Email Assistant That Actually Works for you",
     subtitle:
-      "Cut your email time in half. Inbox Zero organizes your inbox, drafts responses, and helps you reach inbox zero fast. For Gmail and Outlook.",
+      "Cut your email time in half. Angri organizes your inbox, drafts responses, and helps you reach Angri fast. For Gmail and Outlook.",
   },
   "clean-up-in-minutes": {
     title: "Clean Up Your Inbox In Minutes",

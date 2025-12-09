@@ -67,7 +67,7 @@ export function Hero({
           <BlurFade duration={0.4} delay={0.125 * 8}>
             <div className="mb-12 flex items-center gap-2 justify-center">
               <Paragraph color="light" size="sm">
-                Works with
+                Werkt met
               </Paragraph>
               <Outlook />
               <Gmail />
@@ -102,7 +102,7 @@ export function HeroVideoPlayer() {
               <DialogTitle className="sr-only">Video player</DialogTitle>
               <div className="relative aspect-video w-full">
                 <iframe
-                  src="https://www.youtube.com/embed/hfvKvTHBjG0?autoplay=1&rel=0"
+                  src="https://www.youtube.com/"
                   className="size-full rounded-lg"
                   title="Video content"
                   allowFullScreen

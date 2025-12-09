@@ -5,6 +5,6 @@ import { LegalPage } from "@/components/LegalPage";
 
 export function PrivacyContent() {
   return (
-    <LegalPage date="2023-12-20" title="Privacy Policy" content={<Content />} />
+    <LegalPage date="2023-12-20" title="Privacybeleid" content={<Content />} />
   );
 }

@@ -94,7 +94,7 @@ export default async function AutomationPage({
                 video={{
                   title: "Getting started with AI Personal Assistant",
                   description:
-                    "Learn how to use the AI Personal Assistant to automatically label, archive, and more.",
+                    "Khadysia will demonstrate how to use the AI Personal Assistant to automatically label, archive, and more.",
                   muxPlaybackId: "VwIP7UAw4MXDjkvmLjJzGsY00ee9jxIZVI952DoBBfp8",
                 }}
               />
@@ -117,7 +117,7 @@ export default async function AutomationPage({
             icon={<SparklesIcon className="h-5 w-5" />}
             title="Getting started with AI Assistant"
             description={
-              "Learn how to use the AI Assistant to automatically label, archive, and more."
+              "Khadysia will demonstrate how to use the AI Personal Assistant to automatically label, archive, and more."
             }
             muxPlaybackId="VwIP7UAw4MXDjkvmLjJzGsY00ee9jxIZVI952DoBBfp8"
             storageKey="ai-assistant-onboarding-video"

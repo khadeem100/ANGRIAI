@@ -20,9 +20,7 @@ export function EmailActionsAnalytics() {
     >
       {data && (
         <CardBasic>
-          <Title>
-            How many emails you've archived and deleted with Inbox Zero
-          </Title>
+          <Title>How many emails you've archived and deleted with Angri</Title>
 
           <BarChart
             className="mt-4 h-72"

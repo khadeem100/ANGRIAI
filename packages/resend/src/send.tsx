@@ -45,7 +45,7 @@ const sendEmail = async ({
     react,
     text,
     headers: {
-      "List-Unsubscribe": `<https://www.getinboxzero.com/api/unsubscribe?token=${unsubscribeToken}>`,
+      "List-Unsubscribe": `<https://www.angri.nl/api/unsubscribe?token=${unsubscribeToken}>`,
       // From Feb 2024 Google requires this for bulk senders
       "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
       // Prevent threading on Gmail
@@ -155,7 +155,7 @@ export const sendInvitationEmail = async ({
   return sendEmail({
     from,
     to,
-    subject: `You're invited to join ${emailProps.organizationName} on Inbox Zero`,
+    subject: `You're invited to join ${emailProps.organizationName} on Angri`,
     react: <InvitationEmail {...emailProps} />,
     test,
     unsubscribeToken: emailProps.unsubscribeToken,

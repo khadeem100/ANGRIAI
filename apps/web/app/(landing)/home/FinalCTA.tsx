@@ -16,19 +16,15 @@ export function FinalCTA() {
     >
       <Section>
         <SectionHeading>
-          Get back an hour a day.
+          Win een uur per dag terug.
           <br />
-          Start using Inbox Zero.
+          Begin met Angri AI.
         </SectionHeading>
         <SectionSubtitle>
-          Less time in your inbox. More time for what actually matters.
+          Minder tijd in je inbox. Meer tijd voor wat er werkelijk toe doet.
         </SectionSubtitle>
         <SectionContent>
-          <CallToAction
-            text="Get started for free"
-            buttonSize="lg"
-            className="mt-6"
-          />
+          <CallToAction text="Begin gratis" buttonSize="lg" className="mt-6" />
         </SectionContent>
       </Section>
     </div>

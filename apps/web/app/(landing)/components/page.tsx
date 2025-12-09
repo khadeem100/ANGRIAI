@@ -235,9 +235,9 @@ export default function Components() {
               icon={<SparklesIcon className="h-5 w-5" />}
               title="Getting started with AI Assistant"
               description={
-                "Learn how to use the AI Assistant to automatically label, archive, and more."
+                "Khadysia will demonstrate how to use the AI Personal Assistant to automatically label, archive, and more."
               }
-              videoSrc="https://www.youtube.com/embed/SoeNDVr7ve4"
+              videoSrc="https://www.youtube.com/"
               thumbnailSrc="https://img.youtube.com/vi/SoeNDVr7ve4/0.jpg"
               storageKey={`video-dismissible-${Date.now()}`}
             />

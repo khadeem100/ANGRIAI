@@ -7,7 +7,7 @@ export function TermsContent() {
   return (
     <LegalPage
       date="2023-07-16"
-      title="Terms of Service"
+      title="Algemene Voorwaarden"
       content={<Content />}
     />
   );

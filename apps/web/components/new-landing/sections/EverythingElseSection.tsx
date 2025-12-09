@@ -17,9 +17,10 @@ import Image from "next/image";
 export function EverythingElseSection() {
   return (
     <Section>
-      <SectionHeading>Designed around how you actually work</SectionHeading>
+      <SectionHeading>Ontworpen rondom hoe jij werkelijk werkt</SectionHeading>
       <SectionSubtitle>
-        Flexible enough to fit any workflow. Simple enough to set up in minutes.
+        Flexibel genoeg voor elke workflow. Simpel genoeg om in minuten op te
+        zetten.
       </SectionSubtitle>
       <SectionContent
         noMarginTop
@@ -28,8 +29,8 @@ export function EverythingElseSection() {
         <CardWrapper className="w-full grid grid-cols-1 lg:grid-cols-3 gap-5">
           <BlurFade inView>
             <DisplayCard
-              title="Email analytics. What gets measured, gets managed"
-              description="See who emails you most and what's clogging your inbox. Get clear insights, then take action."
+              title="E-mail analytics. Meten is weten"
+              description="Zie wie je het meest mailt en wat je inbox vervuilt. Krijg heldere inzichten en onderneem actie."
               icon={<Analytics />}
             >
               <Image
@@ -42,8 +43,8 @@ export function EverythingElseSection() {
           </BlurFade>
           <BlurFade delay={0.25} inView>
             <DisplayCard
-              title="Drafts that know your schedule and availability"
-              description="Connects to your calendar and CRM to draft emails based on your actual schedule and customer data."
+              title="Concepten die je agenda kennen"
+              description="Verbindt met je agenda en CRM om e-mails te schrijven op basis van je planning en klantgegevens."
               icon={<Link />}
             >
               <Image
@@ -56,8 +57,8 @@ export function EverythingElseSection() {
           </BlurFade>
           <BlurFade delay={0.25 * 2} inView>
             <DisplayCard
-              title="Built to fit your workflow. Customize in plain English"
-              description="Your inbox, your rules. Configure everything in plain English. Make it work the way you actually work."
+              title="Gemaakt voor jouw workflow. Pas aan in begrijpelijke taal"
+              description="Jouw inbox, jouw regels. Configureer alles in gewone taal. Laat het werken zoals jij werkt."
               icon={<ChatTwo />}
             >
               <Image

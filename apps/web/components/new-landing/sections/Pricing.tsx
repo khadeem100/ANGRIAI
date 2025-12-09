@@ -54,21 +54,21 @@ const pricingTiers: PricingTier[] = [
   {
     ...tiers[0],
     badges: [
-      { message: "Save 10%", annualOnly: true },
-      { message: "Popular", variant: "green" },
+      { message: "Bespaar 10%", annualOnly: true },
+      { message: "Populair", variant: "green" },
     ],
     button: {
-      content: "Try free for 7 days",
+      content: "Probeer 14 dagen gratis",
       href: "/login",
     },
     icon: <Briefcase />,
   },
   {
     ...tiers[1],
-    badges: [{ message: "Save 16%", annualOnly: true }],
+    badges: [{ message: "Bespaar 16%", annualOnly: true }],
     button: {
       variant: "secondary-two",
-      content: "Try free for 7 days",
+      content: "Probeer 14 dagen gratis",
       href: "/login",
     },
     icon: <Zap />,
@@ -77,7 +77,7 @@ const pricingTiers: PricingTier[] = [
     ...tiers[2],
     button: {
       variant: "secondary-two",
-      content: "Speak to sales",
+      content: "Praat met sales",
       icon: <Chat />,
       href: "/sales",
       target: "_blank",
@@ -87,6 +87,10 @@ const pricingTiers: PricingTier[] = [
 ];
 
 const frequencies = ["annually", "monthly"];
+const frequencyLabels: Record<string, string> = {
+  annually: "Jaarlijks",
+  monthly: "Maandelijks",
+};
 
 export function Pricing() {
   const [frequency, setFrequency] = useState(frequencies[0]);
@@ -94,8 +98,10 @@ export function Pricing() {
 
   return (
     <Section id="pricing">
-      <SectionHeading>Try for free, affordable paid plans</SectionHeading>
-      <SectionSubtitle>No hidden fees. Cancel anytime.</SectionSubtitle>
+      <SectionHeading>Probeer gratis, betaalbare abonnementen</SectionHeading>
+      <SectionSubtitle>
+        Geen verborgen kosten. Altijd opzegbaar.
+      </SectionSubtitle>
       <SectionContent
         noMarginTop
         className="mt-6 flex flex-col items-center justify-center"
@@ -117,7 +123,7 @@ export function Pricing() {
                 )
               }
             >
-              <span>{value.charAt(0).toUpperCase() + value.slice(1)}</span>
+              <span>{frequencyLabels[value]}</span>
             </Radio>
           ))}
         </RadioGroup>
@@ -151,79 +157,89 @@ function PricingCard({ tier, tierIndex, isAnnual, posthog }: PricingCardProps) {
   const isFirstTier = !tierIndex;
 
   return (
-    <Card
-      title={name}
-      description={description}
-      icon={tier.icon}
-      variant="extra-rounding"
-      addon={
-        <div className="h-0 flex items-center gap-1.5">
-          {tier.badges
-            ?.filter(({ annualOnly }) => !annualOnly || isAnnual)
-            .map((badge) => (
-              <Badge key={badge.message} variant={badge.variant}>
-                {badge.message}
-              </Badge>
-            ))}
-        </div>
-      }
-      className="h-full"
-    >
-      <div className="pt-0 px-6 pb-6">
-        <div className="space-y-6">
-          <div className="flex gap-2 items-end">
-            {price ? (
-              <>
-                <Subheading>${price}</Subheading>
-                <Paragraph size="xs" color="light" className="-translate-y-1">
-                  /user /month (billed {isAnnual ? "annually" : "monthly"})
-                </Paragraph>
-              </>
-            ) : (
-              <Subheading>Contact us</Subheading>
-            )}
-          </div>
-          <Button auto size="lg" variant={tier.button.variant} asChild>
-            <Link
-              href={tier.button.href}
-              target={tier.button.target}
-              onClick={() =>
-                landingPageAnalytics.pricingCtaClicked(
-                  posthog,
-                  tier.name,
-                  tier.button.content,
-                )
-              }
-            >
-              {tier.button.icon}
-              {/* z-10 keeps text above gradient background on hover to prevent color shift */}
-              <span className="relative z-10">{tier.button.content}</span>
-            </Link>
-          </Button>
+    <div className="relative h-full rounded-[32px]">
+      <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/50 backdrop-blur-sm rounded-[32px]">
+        <div className="bg-white px-6 py-2 rounded-full shadow-md border border-gray-100">
+          <span className="font-semibold text-sm text-gray-900">
+            Binnenkort beschikbaar
+          </span>
         </div>
       </div>
-      <CardContent className="border-t border-[#E7E7E780]">
-        {isFirstTier ? null : (
-          <Paragraph size="sm" className="font-medium mb-4">
-            {tier.features[0].text}
-          </Paragraph>
-        )}
-        <ul className="space-y-3">
-          {features
-            .filter((_, index) => !!isFirstTier || index > 0)
-            .map((feature) => (
-              <li
-                className="text-gray-500 flex items-center gap-2 text-sm"
-                key={feature.text}
+      <Card
+        title={name}
+        description={description}
+        icon={tier.icon}
+        variant="extra-rounding"
+        addon={
+          <div className="h-0 flex items-center gap-1.5">
+            {tier.badges
+              ?.filter(({ annualOnly }) => !annualOnly || isAnnual)
+              .map((badge) => (
+                <Badge key={badge.message} variant={badge.variant}>
+                  {badge.message}
+                </Badge>
+              ))}
+          </div>
+        }
+        className="h-full blur-[2px] pointer-events-none select-none"
+      >
+        <div className="pt-0 px-6 pb-6">
+          <div className="space-y-6">
+            <div className="flex gap-2 items-end">
+              {price ? (
+                <>
+                  <Subheading>€{price}</Subheading>
+                  <Paragraph size="xs" color="light" className="-translate-y-1">
+                    /gebruiker /maand (facturatie{" "}
+                    {isAnnual ? "jaarlijks" : "maandelijks"})
+                  </Paragraph>
+                </>
+              ) : (
+                <Subheading>Neem contact op</Subheading>
+              )}
+            </div>
+            <Button auto size="lg" variant={tier.button.variant} asChild>
+              <Link
+                href={tier.button.href}
+                target={tier.button.target}
+                onClick={() =>
+                  landingPageAnalytics.pricingCtaClicked(
+                    posthog,
+                    tier.name,
+                    tier.button.content,
+                  )
+                }
               >
-                <div className="text-blue-500">
-                  <Check />
-                </div>
-                {feature.text}
-              </li>
-            ))}
-        </ul>
-      </CardContent>
-    </Card>
+                {tier.button.icon}
+                {/* z-10 keeps text above gradient background on hover to prevent color shift */}
+                <span className="relative z-10">{tier.button.content}</span>
+              </Link>
+            </Button>
+          </div>
+        </div>
+        <CardContent className="border-t border-[#E7E7E780]">
+          {isFirstTier ? null : (
+            <Paragraph size="sm" className="font-medium mb-4">
+              {tier.features[0].text}
+            </Paragraph>
+          )}
+          <ul className="space-y-3">
+            {features
+              .filter((_, index) => !!isFirstTier || index > 0)
+              .map((feature) => (
+                <li
+                  className="text-gray-500 flex items-center gap-2 text-sm"
+                  key={feature.text}
+                >
+                  <div className="text-blue-500">
+                    <Check />
+                  </div>
+                  {feature.text}
+                </li>
+              ))}
+          </ul>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

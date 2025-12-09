@@ -14,8 +14,9 @@ const withMDX = nextMdx({
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   output: process.env.DOCKER_BUILD === "true" ? "standalone" : undefined,
-  eslint: { ignoreDuringBuilds: true },
+  // eslint: { ignoreDuringBuilds: true },
   serverExternalPackages: ["@sentry/nextjs", "@sentry/node"],
+  /*
   turbopack: {
     rules: {
       "*.svg": {
@@ -24,6 +25,7 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  */
   pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
   images: {
     remotePatterns: [

@@ -44,8 +44,9 @@ export function PremiumExpiredCardContent({
 
   const getSubscriptionMessage = () => {
     const UPGRADE_MESSAGE = {
-      title: "Upgrade to Premium",
-      description: "Upgrade to Premium to enable your AI email assistant.",
+      title: "Upgrade naar Premium",
+      description:
+        "Upgrade naar Premium om je AI-e-mailassistent in te schakelen.",
     };
 
     if (!premium) {
@@ -64,50 +65,51 @@ export function PremiumExpiredCardContent({
 
     if (!premium || hasNoSubscription) {
       return {
-        title: "Upgrade to Premium",
-        description: "Upgrade to Premium to enable your AI email assistant.",
+        title: "Upgrade naar Premium",
+        description:
+          "Upgrade naar Premium om je AI-e-mailassistent in te schakelen.",
       };
     }
 
     if (status === "past_due") {
       return {
-        title: "Payment Past Due",
-        description: "Update your payment method to continue service",
+        title: "Betaling achterstallig",
+        description: "Update je betaalmethode om de service voort te zetten",
       };
     }
 
     if (status === "canceled" || status === "cancelled") {
       return {
-        title: "Subscription Cancelled",
-        description: "Reactivate to resume AI email management",
+        title: "Abonnement geannuleerd",
+        description: "Activeer opnieuw om AI-e-mailbeheer te hervatten",
       };
     }
 
     if (status === "incomplete" || status === "incomplete_expired") {
       return {
-        title: "Payment Incomplete",
-        description: "Complete your payment to activate service",
+        title: "Betaling onvolledig",
+        description: "Voltooi je betaling om de service te activeren",
       };
     }
 
     if (status === "unpaid") {
       return {
-        title: "Payment Required",
-        description: "Update payment to continue AI features",
+        title: "Betaling vereist",
+        description: "Update betaling om AI-functies te behouden",
       };
     }
 
     if (hasLemonSqueezyExpired || status === "expired") {
       return {
-        title: "Subscription Expired",
-        description: "Renew your subscription to continue",
+        title: "Abonnement verlopen",
+        description: "Verleng je abonnement om door te gaan",
       };
     }
 
     // Default fallback
     return {
-      title: "Subscription Issue",
-      description: "Please check your subscription status",
+      title: "Abonnementsprobleem",
+      description: "Controleer je abonnementsstatus",
     };
   };
 
@@ -119,7 +121,7 @@ export function PremiumExpiredCardContent({
       !premium.stripeSubscriptionId &&
       !premium.lemonSqueezySubscriptionId);
 
-  const buttonText = isNewUser ? "Upgrade" : "Reactivate";
+  const buttonText = isNewUser ? "Upgraden" : "Heractiveren";
   const buttonHref = isNewUser ? "/premium" : "/settings";
 
   // When collapsed, show only the alert icon with a hover card

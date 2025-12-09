@@ -228,7 +228,7 @@ function PriceTier({
           ) : (
             <>
               <span className="text-4xl font-bold tracking-tight text-gray-900">
-                ${tier.price[frequency.value]}
+                €{tier.price[frequency.value]}
               </span>
               <span className="text-sm font-semibold leading-6 text-gray-600">
                 /user

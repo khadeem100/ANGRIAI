@@ -524,7 +524,7 @@ function showReplyNotSupportedToast() {
   toastInfo({
     title: "Reply in your email client",
     description:
-      "Please use your email client to reply. Replying from within Inbox Zero not yet supported for Microsoft accounts.",
+      "Please use your email client to reply. Replying from within Angri not yet supported for Microsoft accounts.",
     duration: 5000,
   });
 }

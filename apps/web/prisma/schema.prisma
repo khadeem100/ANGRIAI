@@ -117,6 +117,7 @@ model EmailAccount {
   name  String? // Name associated with the Google account
   image String? // Profile image URL from the Google account
 
+
   about                          String?
   writingStyle                   String?
   signature                      String? // User's email signature from provider or manually set
@@ -170,6 +171,7 @@ model EmailAccount {
   ssoproviders        SsoProvider[]
   calendarConnections CalendarConnection[]
   mcpConnections      McpConnection[]
+  ConnectionConfig    ConnectionConfig?
 
   @@index([userId])
   @@index([lastSummaryEmailAt])
@@ -909,6 +911,27 @@ model Calendar {
   connection   CalendarConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
 
   @@unique([connectionId, calendarId])
+}
+
+model ConnectionConfig {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  imapHost   String
+  imapPort   Int
+  imapUser   String
+  imapPass   String? // Encrypted
+  imapSecure Boolean @default(true)
+
+  smtpHost   String
+  smtpPort   Int
+  smtpUser   String
+  smtpPass   String? // Encrypted
+  smtpSecure Boolean @default(true)
+
+  emailAccountId String       @unique
+  emailAccount   EmailAccount @relation(fields: [emailAccountId], references: [id], onDelete: Cascade)
 }
 
 model Referral {

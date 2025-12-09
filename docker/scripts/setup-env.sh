@@ -7,7 +7,7 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-echo -e "${GREEN}🚀 Inbox Zero Environment Setup${NC}"
+echo -e "${GREEN}🚀 Angri Environment Setup${NC}"
 echo ""
 
 # Determine the project root (script is in docker/scripts/)

@@ -13,13 +13,13 @@ export function BulkUnsubscribe() {
   return (
     <Section>
       <SectionHeading>
-        Get to Inbox Zero fast.
+        Snel een opgeruimde inbox.
         <br />
-        Bulk unsubscribe from emails you never read.
+        Schrijf je in bulk uit voor e-mails die je nooit leest.
       </SectionHeading>
       <SectionSubtitle>
-        See which emails you never read, and one-click unsubscribe and archive
-        them.
+        Zie welke e-mails je nooit leest, en schrijf je met één klik uit en
+        archiveer ze.
       </SectionSubtitle>
       <SectionContent className="flex justify-center items-center">
         <CardWrapper

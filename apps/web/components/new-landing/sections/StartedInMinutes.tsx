@@ -40,11 +40,11 @@ export function StartedInMinutes({ title, subtitle }: StartedInMinutesProps) {
         <CardWrapper className="w-full grid grid-cols-1 lg:grid-cols-3 gap-5">
           <BlurFade inView>
             <DisplayCard
-              title="Connect your Google or Microsoft email"
-              description="Link your Gmail or Outlook in two clicks to get started."
+              title="Verbind je Google of Microsoft e-mail"
+              description="Koppel je Gmail of Outlook in twee klikken om te beginnen."
               icon={
                 <Badge variant="dark-gray" size="sm" icon={<Connect />}>
-                  STEP 1
+                  STAP 1
                 </Badge>
               }
               centerContent={true}
@@ -70,11 +70,11 @@ export function StartedInMinutes({ title, subtitle }: StartedInMinutesProps) {
           </BlurFade>
           <BlurFade delay={0.25} inView>
             <DisplayCard
-              title="Organizes your inbox exactly how you want it"
-              description="Smart categories set up automatically. Use our categories or create your own."
+              title="Organiseert je inbox precies zoals jij wilt"
+              description="Slimme categorieën worden automatisch ingesteld. Gebruik onze categorieën of maak je eigen."
               icon={
                 <Badge variant="dark-gray" size="sm" icon={<AutoOrganize />}>
-                  STEP 2
+                  STAP 2
                 </Badge>
               }
               centerContent
@@ -83,24 +83,24 @@ export function StartedInMinutes({ title, subtitle }: StartedInMinutesProps) {
               <div className="flex flex-col gap-2 scale-[110%]">
                 <div className="flex gap-2">
                   <Badge variant="purple" icon={<Newsletter />}>
-                    Newsletter
+                    Nieuwsbrief
                   </Badge>
                   <Badge variant="dark-blue" icon={<Envelope />}>
-                    To Reply
+                    Te beantwoorden
                   </Badge>
                   <Badge variant="green" icon={<Megaphone />}>
                     Marketing
                   </Badge>
                   <Badge variant="yellow" icon={<Calendar />}>
-                    Calendar
+                    Agenda
                   </Badge>
                 </div>
                 <div className="flex gap-2">
                   <Badge variant="red" icon={<Bell />}>
-                    Notification
+                    Melding
                   </Badge>
                   <Badge variant="light-blue" icon={<SnowFlake />}>
-                    Cold Email
+                    Koude E-mail
                   </Badge>
                   <Badge variant="orange" icon={<Team />}>
                     Team
@@ -114,11 +114,11 @@ export function StartedInMinutes({ title, subtitle }: StartedInMinutesProps) {
           </BlurFade>
           <BlurFade delay={0.25 * 2} inView>
             <DisplayCard
-              title="Pre-drafted replies based on your email history and calendar"
-              description="Every email you get needing a reply will have a pre-written draft."
+              title="Voorgeschreven antwoorden op basis van je e-mailgeschiedenis en agenda"
+              description="Elke e-mail die een antwoord nodig heeft, krijgt een voorgeschreven concept."
               icon={
                 <Badge variant="dark-gray" size="sm" icon={<SparkleBlue />}>
-                  STEP 3
+                  STAP 3
                 </Badge>
               }
             >

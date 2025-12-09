@@ -66,7 +66,7 @@ export function StepFeatures({ onNext }: { onNext: () => void }) {
       </IconCircle>
 
       <div className="text-center mt-4">
-        <PageHeading>How would you like to use Inbox Zero?</PageHeading>
+        <PageHeading>How would you like to use Angri?</PageHeading>
         <TypographyP className="mt-2 max-w-lg mx-auto">
           Select as many as you want.
         </TypographyP>

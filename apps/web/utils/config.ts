@@ -22,4 +22,4 @@ export type CoreConditionType = Extract<ConditionType, "AI" | "STATIC">;
 
 export const WELCOME_PATH = "/welcome-redirect";
 
-export const EXTENSION_URL = "https://go.getinboxzero.com/extension";
+export const EXTENSION_URL = "https://go.angri.nl/extension";

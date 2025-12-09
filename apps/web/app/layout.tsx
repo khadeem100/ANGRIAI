@@ -30,62 +30,69 @@ const geist = Geist({
   display: "swap",
 });
 
-const title = "Angri AI | Automate and clean your inbox";
+const title = "Angri - #1 AI Email Assistent | Bereik Inbox Zero";
 const description =
-  "Your AI executive assistant to get the most out of time. Automate emails, bulk unsubscribe, block cold emails, and analytics. Open-source";
+  "Stop met verdrinken in e-mail. Angri gebruikt geavanceerde AI om je inbox te organiseren, e-mails automatisch te beantwoorden en spam te verwijderen.";
 
 // JSON-LD structured data
 const jsonLd: WithContext<WebApplication> = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  name: "Inbox Zero",
-  url: env.NEXT_PUBLIC_BASE_URL,
-  description,
+  name: "Angri AI",
+  url: env.NEXT_PUBLIC_BASE_URL || "https://angri.nl",
+  description: description,
   applicationCategory: "ProductivityApplication",
   operatingSystem: "Web Browser",
+  inLanguage: "nl-NL",
   offers: {
     "@type": "Offer",
-    price: "20.00",
-    priceCurrency: "USD",
-    priceSpecification: {
-      "@type": "UnitPriceSpecification",
-      price: 20,
-      priceCurrency: "USD",
-      billingDuration: "P1M",
-    },
+    price: "0.00",
+    priceCurrency: "EUR",
     availability: "https://schema.org/InStock",
   },
   featureList: [
-    "AI Email Assistant",
-    "Email Automation",
-    "Bulk Unsubscribe",
-    "Cold Email Blocking",
-    "Email Analytics",
-    "Newsletter Management",
+    "AI Email Assistent",
+    "Slimme Antwoordsuggesties",
+    "Automatisch Uitschrijven",
+    "Koude Email Blokkering",
+    "Privacy Vriendelijk (SOC 2)",
+    "Gmail & Outlook Integratie",
   ],
   publisher: {
     "@type": "Organization",
-    name: "Inbox Zero",
-    url: env.NEXT_PUBLIC_BASE_URL,
+    name: "Tynktech",
+    url: "https://www.tynktech.nl",
     logo: {
       "@type": "ImageObject",
-      url: `${env.NEXT_PUBLIC_BASE_URL}/icon.png`,
+      url: `${env.NEXT_PUBLIC_BASE_URL || "https://angri.nl"}/icon.png`,
     },
     sameAs: [
       "https://x.com/inboxzero_ai",
-      "https://github.com/elie222/inbox-zero",
+      "https://github.com/khadeem100/inbox-zero",
     ],
   },
 };
 
 export const metadata: Metadata = {
-  title,
+  title: {
+    default: title,
+    template: "%s | Angri AI",
+  },
   description,
+  keywords: [
+    "AI email",
+    "Inbox Zero",
+    "Email productivity",
+    "Angri",
+    "Tynktech",
+  ],
   openGraph: {
     title,
     description,
-    siteName: "Inbox Zero",
+    siteName: "Angri AI",
     type: "website",
+    locale: "nl_NL",
+    url: "https://angri.nl",
   },
   twitter: {
     card: "summary_large_image",
@@ -100,11 +107,11 @@ export const metadata: Metadata = {
     follow: true,
   },
   // pwa
-  applicationName: "Inbox Zero",
+  applicationName: "Angri AI",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Inbox Zero",
+    title: "Angri AI",
     startupImage,
   },
   formatDetection: {

@@ -50,12 +50,12 @@ function NavBarBottom({
 const links = [
   {
     path: "/automation",
-    label: "Assistant",
+    label: "Assistent",
     icon: SparklesIcon,
   },
   {
     path: "/bulk-unsubscribe",
-    label: "Unsubscriber",
+    label: "Uitschrijven",
     icon: MailMinusIcon,
   },
   {
@@ -65,7 +65,7 @@ const links = [
   },
   {
     path: "/calendars",
-    label: "Calendars",
+    label: "Agenda's",
     icon: CalendarIcon,
   },
 ];
