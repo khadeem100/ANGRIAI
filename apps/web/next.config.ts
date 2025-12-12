@@ -15,7 +15,32 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   output: process.env.DOCKER_BUILD === "true" ? "standalone" : undefined,
   // eslint: { ignoreDuringBuilds: true },
-  serverExternalPackages: ["@sentry/nextjs", "@sentry/node"],
+  serverExternalPackages: [
+    "@sentry/nextjs",
+    "@sentry/node",
+    "imapflow",
+    "mailparser",
+    "nodemailer",
+    "pino",
+    "thread-stream",
+  ],
+  webpack: (config, { webpack, isServer }) => {
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      tap: false,
+    };
+    config.plugins.push(
+      new webpack.IgnorePlugin({
+        resourceRegExp: /^tap$/,
+      }),
+    );
+
+    if (isServer) {
+      config.externals.push("imapflow", "pino", "thread-stream");
+    }
+
+    return config;
+  },
   /*
   turbopack: {
     rules: {

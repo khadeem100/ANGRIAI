@@ -5,6 +5,10 @@ import { createScopedLogger } from "@/utils/logger";
 import { getAuthToken } from "@/utils/mcp/oauth";
 import { createMcpTransport } from "@/utils/mcp/transport";
 
+import { createOdooTools } from "@/utils/mcp/odoo-tools";
+import { createQuickBooksTools } from "@/utils/mcp/quickbooks-tools";
+import { createPrestashopTools } from "@/utils/mcp/prestashop-tools";
+
 type MCPClient = Awaited<ReturnType<typeof experimental_createMCPClient>>;
 
 export type MCPToolsResult = {
@@ -30,6 +34,9 @@ export async function createMcpToolsForAgent(
       },
       select: {
         id: true,
+        apiKey: true,
+        accessToken: true,
+        metadata: true,
         integration: {
           select: {
             id: true,
@@ -62,6 +69,70 @@ export async function createMcpToolsForAgent(
 
     for (const connection of connections) {
       const integration = connection.integration;
+      
+      // Handle Odoo specially
+      if (integration.name === "odoo") {
+        try {
+          const odooTools = await createOdooTools(connection as any);
+          const enabledToolNames = connection.tools.map((tool) => tool.name);
+          const filteredTools = Object.fromEntries(
+            Object.entries(odooTools).filter(([toolName]) =>
+              enabledToolNames.includes(toolName),
+            ),
+          );
+          
+          toolsByIntegration.set(integration.id, {
+            integrationName: integration.name,
+            tools: filteredTools,
+          });
+        } catch (error) {
+          logger.error("Failed to create Odoo tools", { error });
+        }
+        continue;
+      }
+
+      // Handle QuickBooks specially (local tools)
+      if (integration.name === "quickbooks") {
+        try {
+          const qbTools = await createQuickBooksTools(connection as any);
+          const enabledToolNames = connection.tools.map((tool) => tool.name);
+          const filteredTools = Object.fromEntries(
+            Object.entries(qbTools).filter(([toolName]) =>
+              enabledToolNames.includes(toolName),
+            ),
+          );
+
+          toolsByIntegration.set(integration.id, {
+            integrationName: integration.name,
+            tools: filteredTools,
+          });
+        } catch (error) {
+          logger.error("Failed to create QuickBooks tools", { error });
+        }
+        continue;
+      }
+
+      // Handle PrestaShop specially (local tools)
+      if (integration.name === "prestashop") {
+        try {
+          const psTools = await createPrestashopTools(connection as any);
+          const enabledToolNames = connection.tools.map((tool) => tool.name);
+          const filteredTools = Object.fromEntries(
+            Object.entries(psTools).filter(([toolName]) =>
+              enabledToolNames.includes(toolName),
+            ),
+          );
+
+          toolsByIntegration.set(integration.id, {
+            integrationName: integration.name,
+            tools: filteredTools,
+          });
+        } catch (error) {
+          logger.error("Failed to create PrestaShop tools", { error });
+        }
+        continue;
+      }
+
       const integrationConfig = getIntegration(integration.name);
 
       if (!integrationConfig) {

@@ -22,6 +22,7 @@ type SelectModel = {
   model: LanguageModelV2;
   providerOptions?: Record<string, any>;
   backupModel: LanguageModelV2 | null;
+  fallbacks: SelectModel[];
 };
 
 export function getModel(
@@ -29,15 +30,74 @@ export function getModel(
   modelType: ModelType = "default",
 ): SelectModel {
   const data = selectModelByType(userAi, modelType);
+  
+  // Generate fallbacks if not already present (prevent infinite recursion if we call getModel inside)
+  if (!data.fallbacks) {
+    data.fallbacks = getFallbacks(userAi, data);
+  }
 
   logger.info("Using model", {
     modelType,
     provider: data.provider,
     model: data.modelName,
     providerOptions: data.providerOptions,
+    fallbackCount: data.fallbacks.length,
   });
 
   return data;
+}
+
+function getFallbacks(userAi: UserAIFields, primary: SelectModel): SelectModel[] {
+  const fallbacks: SelectModel[] = [];
+  const primaryId = `${primary.provider}:${primary.modelName}`;
+
+  // 1. Google Gemini 1.5 Flash (Fast, High Limits, Free)
+  if (env.GOOGLE_API_KEY) {
+    const modelName = "gemini-1.5-flash";
+    if (`${Provider.GOOGLE}:${modelName}` !== primaryId) {
+      fallbacks.push({
+        provider: Provider.GOOGLE,
+        modelName,
+        model: createGoogleGenerativeAI({
+          apiKey: env.GOOGLE_API_KEY,
+        })(modelName),
+        backupModel: null,
+        fallbacks: [],
+      });
+    }
+  }
+
+  // 2. Groq Llama 3 (Fast, Free)
+  if (env.GROQ_API_KEY) {
+    const modelName = "llama-3.3-70b-versatile";
+    if (`${Provider.GROQ}:${modelName}` !== primaryId) {
+      fallbacks.push({
+        provider: Provider.GROQ,
+        modelName,
+        model: createGroq({ apiKey: env.GROQ_API_KEY })(modelName),
+        backupModel: null,
+        fallbacks: [],
+      });
+    }
+  }
+
+  // 3. OpenRouter (Aggregation / Fallback)
+  if (env.OPENROUTER_API_KEY) {
+    const modelName = "google/gemini-2.0-flash-exp:free";
+    if (`${Provider.OPENROUTER}:${modelName}` !== primaryId) {
+      fallbacks.push({
+        provider: Provider.OPENROUTER,
+        modelName,
+        model: createOpenRouter({
+          apiKey: env.OPENROUTER_API_KEY,
+        }).chat(modelName),
+        backupModel: null,
+        fallbacks: [],
+      });
+    }
+  }
+
+  return fallbacks;
 }
 
 function selectModelByType(userAi: UserAIFields, modelType: ModelType) {
@@ -75,6 +135,7 @@ function selectModel(
           modelName,
         ),
         backupModel: getBackupModel(aiApiKey),
+        fallbacks: [],
       };
     }
     case Provider.GOOGLE: {
@@ -86,6 +147,7 @@ function selectModel(
           apiKey: aiApiKey || env.GOOGLE_API_KEY,
         })(mod),
         backupModel: getBackupModel(aiApiKey),
+        fallbacks: [],
       };
     }
     case Provider.GROQ: {
@@ -95,6 +157,7 @@ function selectModel(
         modelName,
         model: createGroq({ apiKey: aiApiKey || env.GROQ_API_KEY })(modelName),
         backupModel: getBackupModel(aiApiKey),
+        fallbacks: [],
       };
     }
     case Provider.OPENROUTER: {
@@ -114,6 +177,7 @@ function selectModel(
         model: chatModel,
         providerOptions,
         backupModel: getBackupModel(aiApiKey),
+        fallbacks: [],
       };
     }
     case Provider.AI_GATEWAY: {
@@ -125,6 +189,7 @@ function selectModel(
         modelName,
         model: gateway(modelName),
         backupModel: getBackupModel(aiApiKey),
+        fallbacks: [],
       };
     }
     case Provider.OLLAMA: {
@@ -156,6 +221,7 @@ function selectModel(
           }),
         })(modelName),
         backupModel: getBackupModel(aiApiKey),
+        fallbacks: [],
       };
     }
     case Provider.ANTHROPIC: {
@@ -167,6 +233,7 @@ function selectModel(
           apiKey: aiApiKey || env.ANTHROPIC_API_KEY,
         })(modelName),
         backupModel: getBackupModel(aiApiKey),
+        fallbacks: [],
       };
     }
     default: {

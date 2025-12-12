@@ -22,8 +22,12 @@ import {
   PromptInputSubmit,
 } from "@/components/ai-elements/prompt-input";
 import { useLocalStorage } from "usehooks-ts";
+import { useVoiceChat } from "@/hooks/useVoiceChat";
+import { VoiceButton } from "@/components/voice/VoiceButton";
+import { VoiceVisualizer } from "@/components/voice/VoiceVisualizer";
+import { VoiceSettings } from "@/components/voice/VoiceSettings";
 
-const MAX_MESSAGES = 20;
+const MAX_MESSAGES = 200;
 
 export function Chat() {
   const {
@@ -41,6 +45,16 @@ export function Chat() {
     "input",
     "",
   );
+
+  const {
+    voiceMode,
+    isVoiceEnabled,
+    setIsVoiceEnabled,
+    selectedVoice,
+    setSelectedVoice,
+    toggleVoiceMode,
+    analyser,
+  } = useVoiceChat();
 
   useEffect(() => {
     if (!chatId) {
@@ -73,6 +87,12 @@ export function Chat() {
           ) : null}
         </div>
         <div className="flex items-center gap-1">
+          <VoiceSettings
+            isVoiceEnabled={isVoiceEnabled}
+            setIsVoiceEnabled={setIsVoiceEnabled}
+            selectedVoice={selectedVoice}
+            setSelectedVoice={setSelectedVoice}
+          />
           <NewChatButton />
           <ExamplesDialog setInput={setInput} />
           <ChatHistoryDropdown />
@@ -90,6 +110,11 @@ export function Chat() {
       />
 
       <div className="mx-auto w-full px-4 pb-4 md:max-w-3xl md:pb-6">
+        <VoiceVisualizer
+          state={voiceMode}
+          analyser={analyser}
+          className="mb-4"
+        />
         {context ? (
           <div className="mb-2 flex items-center gap-2">
             <span className="inline-flex items-center gap-2 rounded-full bg-muted px-3 py-1 text-xs text-muted-foreground">
@@ -122,24 +147,30 @@ export function Chat() {
             onChange={(e) => setInput(e.currentTarget.value)}
             className="pr-12"
           />
-          <PromptInputSubmit
-            status={
-              status === "streaming"
-                ? "streaming"
-                : status === "submitted"
-                  ? "submitted"
-                  : "ready"
-            }
-            disabled={(!input.trim() && !context) || status !== "ready"}
-            className="absolute bottom-1 right-1"
-            onClick={(e) => {
-              if (status === "streaming") {
-                e.preventDefault();
-                stop();
-                setMessages((messages) => messages);
+          <div className="absolute bottom-1 right-1 flex items-center gap-1">
+            <VoiceButton
+              voiceMode={voiceMode}
+              isVoiceEnabled={isVoiceEnabled}
+              onToggle={toggleVoiceMode}
+            />
+            <PromptInputSubmit
+              status={
+                status === "streaming"
+                  ? "streaming"
+                  : status === "submitted"
+                    ? "submitted"
+                    : "ready"
               }
-            }}
-          />
+              disabled={(!input.trim() && !context) || status !== "ready"}
+              onClick={(e) => {
+                if (status === "streaming") {
+                  e.preventDefault();
+                  stop();
+                  setMessages((messages) => messages);
+                }
+              }}
+            />
+          </div>
         </PromptInput>
       </div>
     </div>

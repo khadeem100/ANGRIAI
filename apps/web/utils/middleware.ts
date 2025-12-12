@@ -191,7 +191,10 @@ async function emailAccountMiddleware(
 
   const userId = authReq.auth.userId;
 
-  const emailAccountId = req.headers.get(EMAIL_ACCOUNT_HEADER);
+  const url = new URL(req.url);
+  const headerAccountId = req.headers.get(EMAIL_ACCOUNT_HEADER);
+  const queryAccountId = url.searchParams.get("emailAccountId");
+  const emailAccountId = headerAccountId ?? queryAccountId ?? undefined;
 
   if (!emailAccountId) {
     return NextResponse.json(

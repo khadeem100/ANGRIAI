@@ -66,7 +66,7 @@ export function EmailAccountProvider({
       value={{
         emailAccount,
         isLoading,
-        emailAccountId: emailAccountId ?? "",
+        emailAccountId: (emailAccount?.id ?? emailAccountId) ?? "",
         userEmail: emailAccount?.email ?? "",
         provider: emailAccount?.account?.provider ?? "",
       }}

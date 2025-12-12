@@ -1,3 +1,5 @@
+import { env } from "@/env";
+
 type McpIntegrationConfig = {
   name: string;
   serverUrl?: string;
@@ -86,6 +88,41 @@ export const MCP_INTEGRATIONS: Record<
     // OAuth endpoints auto-discovered via RFC 8414
     comingSoon: false,
   },
+  prestashop: {
+    name: "prestashop",
+    displayName: "PrestaShop",
+    serverUrl: "",
+    authType: "api-token",
+    scopes: ["read", "write"],
+    allowedTools: [
+      "customers_list",
+      "customers_search",
+      "customers_get",
+      "customers_delete",
+      "customers_create_xml",
+      "customers_update_xml",
+      "products_list",
+      "products_search",
+      "products_get",
+      "products_delete",
+      "products_create_xml",
+      "products_update_xml",
+      "orders_list",
+      "orders_get",
+      "orders_delete",
+      "orders_create_xml",
+      "orders_update_xml",
+      "customer_threads_list",
+      "customer_threads_get",
+      "customer_threads_delete",
+      "customer_threads_create_xml",
+      "customer_threads_update_xml",
+      "customer_messages_create_xml",
+      "stock_list",
+      "stock_update_quantity",
+    ],
+    comingSoon: false,
+  },
   hubspot: {
     name: "hubspot",
     displayName: "HubSpot",
@@ -120,6 +157,53 @@ export const MCP_INTEGRATIONS: Record<
       token_endpoint: "https://mcp.hubspot.com/oauth/v1/token",
     },
     comingSoon: true,
+  },
+  quickbooks: {
+    name: "quickbooks",
+    displayName: "QuickBooks",
+    // OAuth resource server (not an MCP server)
+    serverUrl: "https://quickbooks.api.intuit.com",
+    authType: "oauth",
+    scopes: ["com.intuit.quickbooks.accounting"],
+    allowedTools: [
+      "customer_list",
+      "invoice_list",
+      "invoice_create",
+    ],
+    // QuickBooks does not expose RFC discovery, so we provide static endpoints
+    oauthConfig: {
+      authorization_endpoint: "https://appcenter.intuit.com/connect/oauth2",
+      token_endpoint: "https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer",
+    },
+    comingSoon: false,
+  },
+  odoo: {
+    name: "odoo",
+    displayName: "Odoo",
+    serverUrl: `${env.NEXT_PUBLIC_BASE_URL}/api/mcp/odoo`,
+    authType: "api-token",
+    scopes: ["read", "write"],
+    allowedTools: [
+      "crm_lead_list",
+      "crm_lead_create",
+      "res_partner_list",
+      "res_partner_search",
+      "project_task_list",
+      "project_task_create",
+      "helpdesk_ticket_list",
+      "sale_order_list",
+      "sale_order_create",
+      "sale_order_confirm",
+      "sale_order_detail",
+      "invoice_list",
+      "invoice_create",
+      "invoice_post",
+      "invoice_detail",
+      "product_list",
+      "product_search",
+      "product_update_stock",
+    ],
+    comingSoon: false,
   },
   // clickup: {
   //   name: "clickup",
@@ -191,6 +275,11 @@ export function getStaticCredentials(
   integration: IntegrationKey,
 ): { clientId?: string; clientSecret?: string } | undefined {
   switch (integration) {
+    case "quickbooks":
+      return {
+        clientId: env.QUICKBOOKS_CLIENT_ID,
+        clientSecret: env.QUICKBOOKS_CLIENT_SECRET,
+      };
     // case "hubspot":
     //   return {
     //     clientId: env.HUBSPOT_MCP_CLIENT_ID,

@@ -1,4 +1,4 @@
-import { type InferUITool, tool, type ModelMessage } from "ai";
+import { type InferUITool, tool, type ModelMessage, type Tool } from "ai";
 import { z } from "zod";
 import { createScopedLogger } from "@/utils/logger";
 import { createRuleSchema } from "@/utils/ai/rule/create-rule-schema";
@@ -26,6 +26,8 @@ import { stringifyEmail } from "@/utils/stringify-email";
 import { getEmailForLLM } from "@/utils/get-email-from-message";
 import type { ParsedMessage } from "@/utils/types";
 import { createEmailProvider } from "@/utils/email/provider";
+import { createMcpToolsForAgent } from "@/utils/ai/mcp/mcp-tools";
+import { syncPrestashopOrderToOdoo } from "@/utils/ai/assistant/prestashop-odoo-bridge";
 
 const logger = createScopedLogger("ai/assistant/chat");
 
@@ -760,10 +762,18 @@ export async function aiProcessAssistantChat({
   user: EmailAccountWithAI;
   context?: MessageContext;
 }) {
-  const system = `You are an assistant that helps create and update rules to manage a user's inbox. Our platform is called Angri.
+  const system = `You are an assistant that helps create and update rules to manage a user's inbox and automate business operations. Our platform is called Angri.
   
 You can perform any actions on their inbox.
 You can adjust the rules that manage the inbox.
+
+App Store Integrations:
+- The platform includes an App Store where users connect third-party applications (e.g., Odoo, PrestaShop, QuickBooks, Stripe, Monday, Notion).
+- When tools from connected integrations are available to you in your tool list, you may use them to perform tasks directly inside those apps (both read and write), following the user's intent.
+- For business tools such as Odoo and PrestaShop, you can also move data between them when the user asks (for example, creating Odoo sale orders from PrestaShop orders, or synchronising product information and stock levels).
+- If a needed integration is not connected or tools are not available, briefly suggest connecting it via the App Store before proceeding with alternatives you can perform.
+- Never invent capabilities or tools. Only use what is present in your available tool list.
+- Prefer safe, reversible operations for write actions; proceed when intent is explicit or strongly implied by the user's message.
 
 A rule is comprised of:
 1. A condition
@@ -1043,6 +1053,72 @@ Examples:
         ]
       : [];
 
+  // Load connected App Store (MCP) tools for this email account (e.g., Odoo)
+  const { tools: mcpTools, cleanup } = await createMcpToolsForAgent(
+    emailAccountId,
+  );
+
+  // Merge built-in assistant tools with MCP tools
+  const assistantTools: Record<string, Tool> = {
+    getUserRulesAndSettings: getUserRulesAndSettingsTool(toolOptions),
+    getLearnedPatterns: getLearnedPatternsTool(toolOptions),
+    createRule: createRuleTool(toolOptions),
+    updateRuleConditions: updateRuleConditionsTool(toolOptions),
+    updateRuleActions: updateRuleActionsTool(toolOptions),
+    updateLearnedPatterns: updateLearnedPatternsTool(toolOptions),
+    updateAbout: updateAboutTool(toolOptions),
+    addToKnowledgeBase: addToKnowledgeBaseTool(toolOptions),
+    searchEmails: searchEmailsTool(toolOptions),
+    replyToEmail: replyToEmailTool(toolOptions),
+    syncPrestashopOrderToOdoo: tool({
+      name: "syncPrestashopOrderToOdoo",
+      description:
+        "Sync a single order from PrestaShop into Odoo as a sale order. This tool will find or create the corresponding customer in Odoo (based on the PrestaShop customer), map line items to Odoo products (creating simple products if needed), and create the sale order. It avoids duplicates by client_order_ref when possible.",
+      inputSchema: z
+        .object({
+          prestashopOrderId: z
+            .number()
+            .optional()
+            .describe("PrestaShop order ID to sync"),
+          prestashopOrderReference: z
+            .string()
+            .optional()
+            .describe("PrestaShop order reference to sync if ID is not known"),
+          confirmOrder: z
+            .boolean()
+            .optional()
+            .describe(
+              "If true, attempt to confirm the created Odoo sale order (turn quotation into order)",
+            ),
+        })
+        .refine(
+          (v) => v.prestashopOrderId !== undefined || !!v.prestashopOrderReference,
+          {
+            message:
+              "You must provide either prestashopOrderId or prestashopOrderReference",
+          },
+        ),
+      execute: async ({
+        prestashopOrderId,
+        prestashopOrderReference,
+        confirmOrder,
+      }: {
+        prestashopOrderId?: number;
+        prestashopOrderReference?: string;
+        confirmOrder?: boolean;
+      }) => {
+        trackToolCall({ tool: "sync_prestashop_order_to_odoo", email: user.email });
+        return syncPrestashopOrderToOdoo({
+          emailAccountId,
+          prestashopOrderId,
+          prestashopOrderReference,
+          confirmOrder,
+        });
+      },
+    }),
+    ...(mcpTools as Record<string, Tool>),
+  };
+
   const result = chatCompletionStream({
     userAi: user.user,
     userEmail: user.email,
@@ -1060,17 +1136,9 @@ Examples:
       logger.trace("Step finished", { text, toolCalls });
     },
     maxSteps: 10,
-    tools: {
-      getUserRulesAndSettings: getUserRulesAndSettingsTool(toolOptions),
-      getLearnedPatterns: getLearnedPatternsTool(toolOptions),
-      createRule: createRuleTool(toolOptions),
-      updateRuleConditions: updateRuleConditionsTool(toolOptions),
-      updateRuleActions: updateRuleActionsTool(toolOptions),
-      updateLearnedPatterns: updateLearnedPatternsTool(toolOptions),
-      updateAbout: updateAboutTool(toolOptions),
-      addToKnowledgeBase: addToKnowledgeBaseTool(toolOptions),
-      searchEmails: searchEmailsTool(toolOptions),
-      replyToEmail: replyToEmailTool(toolOptions),
+    tools: assistantTools,
+    onFinish: async (_result) => {
+      await cleanup();
     },
   });
 

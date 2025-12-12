@@ -125,6 +125,29 @@ export function isServiceUnavailableError(error: unknown): error is Error {
   return error instanceof Error && error.name === "ServiceUnavailableException";
 }
 
+export function isRateLimitError(error: unknown): boolean {
+  if (APICallError.isInstance(error)) {
+    return (
+      error.statusCode === 429 ||
+      error.message.toLowerCase().includes("quota") ||
+      error.message.toLowerCase().includes("exhausted") ||
+      error.message.toLowerCase().includes("rate limit") ||
+      error.message.toLowerCase().includes("too many requests")
+    );
+  }
+  
+  if (error instanceof Error) {
+    return (
+      error.message.toLowerCase().includes("quota") ||
+      error.message.toLowerCase().includes("exhausted") ||
+      error.message.toLowerCase().includes("rate limit") ||
+      error.message.toLowerCase().includes("too many requests")
+    );
+  }
+
+  return false;
+}
+
 // we don't want to capture these errors in Sentry
 export function isKnownApiError(error: unknown): boolean {
   return (

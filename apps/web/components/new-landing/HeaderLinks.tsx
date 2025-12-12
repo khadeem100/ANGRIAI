@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/navigation-menu";
 
 const navigation = [
+  { name: "AI Ops", href: "/product/ai-ops" },
   { name: "Enterprise", href: "/enterprise" },
   {
     name: "Bedrijf",

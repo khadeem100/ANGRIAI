@@ -3,6 +3,9 @@ import { getIntegration, type IntegrationKey } from "@/utils/mcp/integrations";
 import prisma from "@/utils/prisma";
 import { createScopedLogger } from "@/utils/logger";
 import type { Prisma } from "@/generated/prisma/client";
+import { getOdooToolDefinitions } from "@/utils/mcp/odoo-tools";
+import { getQuickBooksToolDefinitions } from "@/utils/mcp/quickbooks-tools";
+import { getPrestashopToolDefinitions } from "@/utils/mcp/prestashop-tools";
 
 /**
  * Syncs tools from an MCP integration server to the database
@@ -44,7 +47,17 @@ export async function syncMcpTools(
       throw new Error(`No active connection found for ${integration}`);
     }
 
-    const allTools = await listMcpTools(integration, emailAccountId);
+    let allTools: Array<{ name: string; description?: string; inputSchema?: unknown }>;
+
+    if (integration === "odoo") {
+      allTools = getOdooToolDefinitions();
+    } else if (integration === "quickbooks") {
+      allTools = getQuickBooksToolDefinitions();
+    } else if (integration === "prestashop") {
+      allTools = getPrestashopToolDefinitions();
+    } else {
+      allTools = await listMcpTools(integration, emailAccountId);
+    }
 
     // Filter to only allowed tools if specified in config
     const allowedToolNames = integrationConfig.allowedTools;

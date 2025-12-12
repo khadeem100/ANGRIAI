@@ -18,10 +18,15 @@ export function Integrations() {
   const { data, isLoading, error, mutate } = useIntegrations();
 
   const integrations = data?.integrations || [];
+  const uiError = error
+    ? ("info" in (error as any)
+        ? { info: (error as any).info }
+        : { error: (error as Error).message })
+    : undefined;
 
   return (
     <Card>
-      <LoadingContent loading={isLoading} error={error}>
+      <LoadingContent loading={isLoading} error={uiError}>
         <Table>
           <TableHeader>
             <TableRow>

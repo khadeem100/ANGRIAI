@@ -61,6 +61,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   name          String?
   email         String    @unique
+  password      String?
   emailVerified Boolean?  @default(false)
   image         String?
   accounts      Account[]
@@ -1001,6 +1002,7 @@ model McpConnection {
   emailAccountId String?
   emailAccount   EmailAccount?  @relation(fields: [emailAccountId], references: [id], onDelete: Cascade)
   tools          McpTool[]
+  metadata       Json? // For example, Odoo URL and DB name
 
   @@unique([emailAccountId, integrationId])
 }

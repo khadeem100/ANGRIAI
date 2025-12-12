@@ -24,6 +24,8 @@ export const env = createEnv({
     GOOGLE_CLIENT_SECRET: z.string().min(1),
     MICROSOFT_CLIENT_ID: z.string().optional(),
     MICROSOFT_CLIENT_SECRET: z.string().optional(),
+    QUICKBOOKS_CLIENT_ID: z.string().optional(),
+    QUICKBOOKS_CLIENT_SECRET: z.string().optional(),
     EMAIL_ENCRYPT_SECRET: z.string(),
     EMAIL_ENCRYPT_SALT: z.string(),
 
@@ -57,6 +59,10 @@ export const env = createEnv({
     OPENROUTER_API_KEY: z.string().optional(),
     AI_GATEWAY_API_KEY: z.string().optional(),
     OLLAMA_BASE_URL: z.string().optional(),
+
+    // Voice AI
+    DEEPGRAM_API_KEY: z.string().optional(),
+    ELEVENLABS_API_KEY: z.string().optional(),
 
     UPSTASH_REDIS_URL: z.string().optional(),
     UPSTASH_REDIS_TOKEN: z.string().optional(),

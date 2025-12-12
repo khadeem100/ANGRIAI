@@ -8,10 +8,13 @@ import Image from "next/image";
 import type { GetAuthLinkUrlResponse } from "@/app/api/google/linking/auth-url/route";
 import type { GetOutlookAuthLinkUrlResponse } from "@/app/api/outlook/linking/auth-url/route";
 import { TypographyP } from "@/components/Typography";
+import { Mail } from "lucide-react";
+import { ImapConnectModal } from "@/components/modals/ImapConnectModal";
 
 export function AddAccount() {
   const [isLoadingGoogle, setIsLoadingGoogle] = useState(false);
   const [isLoadingMicrosoft, setIsLoadingMicrosoft] = useState(false);
+  const [isImapModalOpen, setIsImapModalOpen] = useState(false);
 
   const handleAddAccount = async (provider: "google" | "outlook") => {
     const setLoading =
@@ -48,45 +51,66 @@ export function AddAccount() {
   };
 
   return (
-    <Card className="flex items-center justify-center">
-      <CardContent className="flex flex-col items-center gap-4 p-6">
-        <Button
-          variant="outline"
-          className="w-full"
-          onClick={() => handleAddAccount("google")}
-          loading={isLoadingGoogle}
-          disabled={isLoadingGoogle || isLoadingMicrosoft}
-        >
-          <Image
-            src="/images/google.svg"
-            alt=""
-            width={24}
-            height={24}
-            unoptimized
-          />
-          <span className="ml-2">Add Google Account</span>
-        </Button>
-        <Button
-          variant="outline"
-          className="w-full"
-          onClick={() => handleAddAccount("outlook")}
-          loading={isLoadingMicrosoft}
-          disabled={isLoadingGoogle || isLoadingMicrosoft}
-        >
-          <Image
-            src="/images/microsoft.svg"
-            alt=""
-            width={24}
-            height={24}
-            unoptimized
-          />
-          <span className="ml-2">Add Microsoft Account</span>
-        </Button>
+    <>
+      <Card className="flex items-center justify-center">
+        <CardContent className="flex flex-col items-center gap-4 p-6">
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => handleAddAccount("google")}
+            loading={isLoadingGoogle}
+            disabled={isLoadingGoogle || isLoadingMicrosoft}
+          >
+            <Image
+              src="/images/google.svg"
+              alt=""
+              width={24}
+              height={24}
+              unoptimized
+            />
+            <span className="ml-2">Add Google Account</span>
+          </Button>
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => handleAddAccount("outlook")}
+            loading={isLoadingMicrosoft}
+            disabled={isLoadingGoogle || isLoadingMicrosoft}
+          >
+            <Image
+              src="/images/microsoft.svg"
+              alt=""
+              width={24}
+              height={24}
+              unoptimized
+            />
+            <span className="ml-2">Add Microsoft Account</span>
+          </Button>
 
-        <TypographyP className="text-sm text-muted-foreground">
-          You will be billed for each account.
-        </TypographyP>
-      </CardContent>
-    </Card>
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => setIsImapModalOpen(true)}
+            disabled={isLoadingGoogle || isLoadingMicrosoft}
+          >
+            <Mail className="h-6 w-6" />
+            <span className="ml-2">Add IMAP Account</span>
+          </Button>
+
+          <TypographyP className="text-sm text-muted-foreground">
+            You will be billed for each account.
+          </TypographyP>
+        </CardContent>
+      </Card>
+
+      <ImapConnectModal
+        isOpen={isImapModalOpen}
+        onClose={() => setIsImapModalOpen(false)}
+        onSuccess={(emailAccountId) => {
+          // Refresh the page to show the new account
+          window.location.reload();
+        }}
+      />
+    </>
   );
 }

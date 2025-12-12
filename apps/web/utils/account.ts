@@ -135,7 +135,7 @@ export async function redirectToEmailAccountPath(path: `/${string}`) {
   }
 
   if (!emailAccountId) {
-    notFound();
+    redirect("/accounts");
   }
 
   const redirectUrl = `/${emailAccountId}${path}`;

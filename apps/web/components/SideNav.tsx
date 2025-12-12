@@ -83,6 +83,16 @@ export const useNavigation = () => {
         icon: SparklesIcon,
       },
       {
+        name: "App Store",
+        href: prefixPath(currentEmailAccountId, "/integrations"),
+        icon: MessagesSquareIcon,
+      },
+      {
+        name: "AI Ops",
+        href: "/product/ai-ops",
+        icon: SparklesIcon,
+      },
+      {
         name: "Bulk Uitschrijven",
         href: prefixPath(currentEmailAccountId, "/bulk-unsubscribe"),
         icon: MailsIcon,

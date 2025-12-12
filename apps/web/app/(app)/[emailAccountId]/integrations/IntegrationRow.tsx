@@ -24,6 +24,8 @@ import {
 import { useAccount } from "@/providers/EmailAccountProvider";
 import { fetchWithAccount } from "@/utils/fetch";
 import { RequestAccessDialog } from "./RequestAccessDialog";
+import { OdooConnectModal } from "@/components/modals/OdooConnectModal";
+import { PrestashopConnectModal } from "@/components/modals/PrestashopConnectModal";
 import { truncate } from "@/utils/string";
 
 interface IntegrationRowProps {
@@ -38,6 +40,8 @@ export function IntegrationRow({
   const { emailAccountId } = useAccount();
   const [disconnecting, setDisconnecting] = useState(false);
   const [expandedTools, setExpandedTools] = useState(false);
+  const [showOdooModal, setShowOdooModal] = useState(false);
+  const [showPrestashopModal, setShowPrestashopModal] = useState(false);
 
   const conn = integration.connection;
 
@@ -49,6 +53,16 @@ export function IntegrationRow({
   const tools = conn?.tools || [];
 
   const handleConnect = async () => {
+    if (integration.name === "odoo") {
+      setShowOdooModal(true);
+      return;
+    }
+
+    if (integration.name === "prestashop") {
+      setShowPrestashopModal(true);
+      return;
+    }
+
     if (integration.authType === "api-token") {
       toastError({
         title: "Error connecting to integration",
@@ -199,7 +213,7 @@ export function IntegrationRow({
               ) : (
                 <Button size="sm" variant="outline" onClick={handleConnect}>
                   {integration.authType === "api-token"
-                    ? "Connect with API Key"
+                    ? "Connect"
                     : "Connect"}
                 </Button>
               )}
@@ -270,6 +284,18 @@ export function IntegrationRow({
       {expandedTools && tools.length > 0 && (
         <ToolsList tools={tools} onToggleTool={handleToggleTool} />
       )}
+
+      <OdooConnectModal
+        isOpen={showOdooModal}
+        onClose={() => setShowOdooModal(false)}
+        onSuccess={onConnectionChange}
+      />
+
+      <PrestashopConnectModal
+        isOpen={showPrestashopModal}
+        onClose={() => setShowPrestashopModal(false)}
+        onSuccess={onConnectionChange}
+      />
     </>
   );
 }

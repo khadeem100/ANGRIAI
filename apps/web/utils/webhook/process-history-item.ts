@@ -10,7 +10,7 @@ import type { EmailAccount } from "@/generated/prisma/client";
 import { extractEmailAddress } from "@/utils/email";
 import { isIgnoredSender } from "@/utils/filter-ignored-senders";
 import type { EmailProvider } from "@/utils/email/types";
-import type { RuleWithActions } from "@/utils/types";
+import type { RuleWithActions, ParsedMessage } from "@/utils/types";
 import type { EmailAccountWithAI } from "@/utils/llms/types";
 import type { Logger } from "@/utils/logger";
 
@@ -28,9 +28,11 @@ export async function processHistoryItem(
   {
     messageId,
     threadId,
+    preFetchedMessage,
   }: {
     messageId: string;
     threadId?: string;
+    preFetchedMessage?: ParsedMessage;
   },
   options: SharedProcessHistoryOptions,
 ) {
@@ -57,7 +59,7 @@ export async function processHistoryItem(
 
   try {
     const [parsedMessage, hasExistingRule] = await Promise.all([
-      provider.getMessage(messageId),
+      preFetchedMessage || provider.getMessage(messageId),
       threadId
         ? prisma.executedRule.findFirst({
             where: {

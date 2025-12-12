@@ -150,6 +150,30 @@ export const GET = withError(async (request: NextRequest, { params }) => {
       emailAccountId,
     });
 
+    // Persist provider-specific metadata (e.g., QuickBooks realmId)
+    if (integration === "quickbooks") {
+      const realmId = searchParams.get("realmId");
+      if (realmId) {
+        const dbIntegration = await prisma.mcpIntegration.findUnique({
+          where: { name: integration },
+          select: { id: true },
+        });
+        if (dbIntegration) {
+          await prisma.mcpConnection.update({
+            where: {
+              emailAccountId_integrationId: {
+                emailAccountId,
+                integrationId: dbIntegration.id,
+              },
+            },
+            data: {
+              metadata: { realmId },
+            },
+          });
+        }
+      }
+    }
+
     logger.info("Successfully connected MCP integration", {
       integration,
       userId,
