@@ -17,7 +17,7 @@ export default function BusinessWelcomePage() {
       <CardBasic className="mx-auto flex max-w-2xl flex-col justify-center space-y-6 p-10 duration-500 animate-in fade-in bg-white/80 backdrop-blur-sm">
         <div className="flex flex-col text-center space-y-2">
           <PageHeading>Welcome to Angri Business</PageHeading>
-          <TypographyP>Let's tailor your workspace.</TypographyP>
+          <TypographyP>Let's create your workspace.</TypographyP>
         </div>
 
         <BusinessOnboardingForm />
