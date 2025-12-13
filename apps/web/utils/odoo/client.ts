@@ -25,9 +25,11 @@ export class OdooClient {
         "User-Agent": "InboxZero-Odoo/1.0",
       },
     };
-    
+
     const isSecure = url.protocol === "https:";
-    const createClient = isSecure ? xmlrpc.createSecureClient : xmlrpc.createClient;
+    const createClient = isSecure
+      ? xmlrpc.createSecureClient
+      : xmlrpc.createClient;
 
     this.common = createClient(clientOptions);
     this.object = createClient({
@@ -95,7 +97,12 @@ export class OdooClient {
 
   // Helper methods for common operations
 
-  async searchRead(model: string, domain: any[] = [], fields: string[] = [], limit = 10) {
+  async searchRead(
+    model: string,
+    domain: any[] = [],
+    fields: string[] = [],
+    limit = 10,
+  ) {
     return this.execute(model, "search_read", [domain], {
       fields,
       limit,

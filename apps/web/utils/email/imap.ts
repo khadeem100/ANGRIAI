@@ -70,7 +70,10 @@ export class ImapProvider implements EmailProvider {
     });
   }
 
-  async getMessagesAfterUid(lastUid: number, limit: number = 50): Promise<ParsedMessage[]> {
+  async getMessagesAfterUid(
+    lastUid: number,
+    limit = 50,
+  ): Promise<ParsedMessage[]> {
     const client = await this.getImapClient();
     await client.connect();
 
@@ -80,22 +83,28 @@ export class ImapProvider implements EmailProvider {
         const messages: ParsedMessage[] = [];
         // UID range: (lastUid + 1):*
         const range = `${lastUid + 1}:*`;
-        
-        for await (const msg of client.fetch(range, { source: true, envelope: true, uid: true })) {
+
+        for await (const msg of client.fetch(range, {
+          source: true,
+          envelope: true,
+          uid: true,
+        })) {
           if (!msg.source || !msg.envelope || !msg.uid) continue;
-          
+
           // Skip if we somehow got the same UID (shouldn't happen with proper range)
           if (msg.uid <= lastUid) continue;
 
           const parsed = await simpleParser(msg.source);
-          
+
           messages.push({
             id: msg.uid.toString(),
             threadId: msg.envelope.messageId || msg.uid.toString(),
             labelIds: ["INBOX"],
             snippet: parsed.text?.substring(0, 100) || "",
             historyId: msg.seq.toString(),
-            internalDate: (msg.envelope.date || new Date()).getTime().toString(),
+            internalDate: (msg.envelope.date || new Date())
+              .getTime()
+              .toString(),
             // @ts-ignore
             sizeEstimate: msg.source.length || 0,
             headers: {
@@ -106,7 +115,7 @@ export class ImapProvider implements EmailProvider {
               "message-id": msg.envelope.messageId || "",
             },
             textPlain: parsed.text || "",
-            textHtml: (parsed.html || parsed.textAsHtml) || "",
+            textHtml: parsed.html || parsed.textAsHtml || "",
             inline: [],
           });
 
@@ -122,7 +131,7 @@ export class ImapProvider implements EmailProvider {
     }
   }
 
-  async getThreads(folderId: string = "INBOX"): Promise<EmailThread[]> {
+  async getThreads(folderId = "INBOX"): Promise<EmailThread[]> {
     const client = await this.getImapClient();
     await client.connect();
 
@@ -130,7 +139,7 @@ export class ImapProvider implements EmailProvider {
       const lock = await client.getMailboxLock(folderId);
       try {
         const messages: ParsedMessage[] = [];
-        
+
         // Fetch last 20 messages
         const status = await client.status(folderId, { messages: true });
         const total = status.messages || 0;
@@ -139,12 +148,16 @@ export class ImapProvider implements EmailProvider {
 
         if (total === 0) return [];
 
-        for await (const msg of client.fetch(range, { source: true, envelope: true, uid: true })) {
+        for await (const msg of client.fetch(range, {
+          source: true,
+          envelope: true,
+          uid: true,
+        })) {
           if (!msg.source) continue;
-          
+
           const parsed = await simpleParser(msg.source);
           const envelope = msg.envelope;
-          
+
           if (!envelope) continue;
 
           messages.push({
@@ -164,18 +177,17 @@ export class ImapProvider implements EmailProvider {
               "message-id": envelope.messageId || "",
             },
             textPlain: parsed.text || "",
-            textHtml: (parsed.html || parsed.textAsHtml) || "",
+            textHtml: parsed.html || parsed.textAsHtml || "",
             inline: [],
           });
         }
 
-        return messages.reverse().map(msg => ({
+        return messages.reverse().map((msg) => ({
           id: msg.id,
           messages: [msg],
           snippet: msg.snippet,
-          historyId: msg.historyId
+          historyId: msg.historyId,
         }));
-
       } finally {
         lock.release();
       }
@@ -190,17 +202,17 @@ export class ImapProvider implements EmailProvider {
       id: threadId,
       messages: [message],
       snippet: message.snippet,
-      historyId: message.historyId
+      historyId: message.historyId,
     };
   }
 
   async getLabels(): Promise<EmailLabel[]> {
     const client = await this.getImapClient();
     await client.connect();
-    
+
     try {
       const mailboxes = await client.list();
-      return mailboxes.map(box => ({
+      return mailboxes.map((box) => ({
         id: box.path,
         name: box.name,
         type: "system",
@@ -212,20 +224,20 @@ export class ImapProvider implements EmailProvider {
 
   async getLabelById(labelId: string): Promise<EmailLabel | null> {
     const labels = await this.getLabels();
-    return labels.find(l => l.id === labelId) || null;
+    return labels.find((l) => l.id === labelId) || null;
   }
 
   async getLabelByName(name: string): Promise<EmailLabel | null> {
     const labels = await this.getLabels();
-    return labels.find(l => l.name === name) || null;
+    return labels.find((l) => l.name === name) || null;
   }
 
   async getFolders(): Promise<OutlookFolder[]> {
     const labels = await this.getLabels();
-    return labels.map(l => ({
+    return labels.map((l) => ({
       id: l.id,
       displayName: l.name,
-      childFolders: []
+      childFolders: [],
     }));
   }
 
@@ -236,11 +248,16 @@ export class ImapProvider implements EmailProvider {
     try {
       const lock = await client.getMailboxLock("INBOX");
       try {
-        const uid = parseInt(messageId, 10);
+        const uid = Number.parseInt(messageId, 10);
         if (isNaN(uid)) throw new Error("Invalid UID");
 
-        const message = await client.fetchOne(uid.toString(), { source: true, envelope: true, uid: true }, { uid: true });
-        if (!message || !message.source || !message.envelope) throw new Error("Message not found");
+        const message = await client.fetchOne(
+          uid.toString(),
+          { source: true, envelope: true, uid: true },
+          { uid: true },
+        );
+        if (!message || !message.source || !message.envelope)
+          throw new Error("Message not found");
 
         const parsed = await simpleParser(message.source);
 
@@ -250,7 +267,9 @@ export class ImapProvider implements EmailProvider {
           labelIds: ["INBOX"],
           snippet: parsed.text?.substring(0, 100) || "",
           historyId: message.seq.toString(),
-          internalDate: (message.envelope.date || new Date()).getTime().toString(),
+          internalDate: (message.envelope.date || new Date())
+            .getTime()
+            .toString(),
           // @ts-ignore
           sizeEstimate: message.source.length || 0,
           headers: {
@@ -261,7 +280,7 @@ export class ImapProvider implements EmailProvider {
             "message-id": message.envelope.messageId || "",
           },
           textPlain: parsed.text || "",
-          textHtml: (parsed.html || parsed.textAsHtml) || "",
+          textHtml: parsed.html || parsed.textAsHtml || "",
           inline: [],
         };
       } finally {
@@ -272,7 +291,9 @@ export class ImapProvider implements EmailProvider {
     }
   }
 
-  async getMessageByRfc822MessageId(rfc822MessageId: string): Promise<ParsedMessage | null> {
+  async getMessageByRfc822MessageId(
+    rfc822MessageId: string,
+  ): Promise<ParsedMessage | null> {
     return null;
   }
 
@@ -301,7 +322,9 @@ export class ImapProvider implements EmailProvider {
     return this.getThreadMessages(threadId);
   }
 
-  async getPreviousConversationMessages(messageIds: string[]): Promise<ParsedMessage[]> {
+  async getPreviousConversationMessages(
+    messageIds: string[],
+  ): Promise<ParsedMessage[]> {
     return [];
   }
 
@@ -312,8 +335,10 @@ export class ImapProvider implements EmailProvider {
       const lock = await client.getMailboxLock("INBOX");
       try {
         const list = await client.list();
-        let archivePath = list.find(b => b.name.match(/archive/i) || b.specialUse === "\\Archive")?.path;
-        
+        const archivePath = list.find(
+          (b) => b.name.match(/archive/i) || b.specialUse === "\\Archive",
+        )?.path;
+
         if (!archivePath) {
           this.logger.warn("No Archive folder found, skipping archive action");
           return;
@@ -351,8 +376,10 @@ export class ImapProvider implements EmailProvider {
       const lock = await client.getMailboxLock("INBOX");
       try {
         const list = await client.list();
-        let trashPath = list.find(b => b.name.match(/trash|bin/i) || b.specialUse === "\\Trash")?.path;
-        
+        const trashPath = list.find(
+          (b) => b.name.match(/trash|bin/i) || b.specialUse === "\\Trash",
+        )?.path;
+
         if (trashPath) {
           await client.messageMove(threadId, trashPath, { uid: true });
         } else {
@@ -366,11 +393,17 @@ export class ImapProvider implements EmailProvider {
     }
   }
 
-  async labelMessage(options: { messageId: string; labelId: string; labelName: string | null }): Promise<{ usedFallback?: boolean; actualLabelId?: string }> {
+  async labelMessage(options: {
+    messageId: string;
+    labelId: string;
+    labelName: string | null;
+  }): Promise<{ usedFallback?: boolean; actualLabelId?: string }> {
     const client = await this.getImapClient();
     await client.connect();
     try {
-      await client.messageMove(options.messageId, options.labelId, { uid: true });
+      await client.messageMove(options.messageId, options.labelId, {
+        uid: true,
+      });
       return { actualLabelId: options.labelId };
     } finally {
       await client.logout();
@@ -397,7 +430,9 @@ export class ImapProvider implements EmailProvider {
         address: this.config.smtpUser,
       },
       to: email.headers.from,
-      subject: email.headers.subject?.startsWith("Re:") ? email.headers.subject : `Re: ${email.headers.subject}`,
+      subject: email.headers.subject?.startsWith("Re:")
+        ? email.headers.subject
+        : `Re: ${email.headers.subject}`,
       text: content,
       inReplyTo: email.headers["message-id"],
       references: email.headers["message-id"],
@@ -587,7 +622,9 @@ export class ImapProvider implements EmailProvider {
     // Not implemented
   }
 
-  async getOriginalMessage(originalMessageId: string): Promise<ParsedMessage | null> {
+  async getOriginalMessage(
+    originalMessageId: string,
+  ): Promise<ParsedMessage | null> {
     return null;
   }
 
@@ -617,7 +654,10 @@ export class ImapProvider implements EmailProvider {
     return { messages: [] };
   }
 
-  async getMessagesFromSender(): Promise<{ messages: ParsedMessage[]; nextPageToken?: string }> {
+  async getMessagesFromSender(): Promise<{
+    messages: ParsedMessage[];
+    nextPageToken?: string;
+  }> {
     return { messages: [] };
   }
 
@@ -637,7 +677,10 @@ export class ImapProvider implements EmailProvider {
     return 0;
   }
 
-  async getAttachment(messageId: string, attachmentId: string): Promise<{ data: string; size: number }> {
+  async getAttachment(
+    messageId: string,
+    attachmentId: string,
+  ): Promise<{ data: string; size: number }> {
     return { data: "", size: 0 };
   }
 
@@ -661,7 +704,10 @@ export class ImapProvider implements EmailProvider {
     // Not applicable
   }
 
-  async watchEmails(): Promise<{ expirationDate: Date; subscriptionId?: string } | null> {
+  async watchEmails(): Promise<{
+    expirationDate: Date;
+    subscriptionId?: string;
+  } | null> {
     return null;
   }
 
@@ -677,7 +723,11 @@ export class ImapProvider implements EmailProvider {
     return message.headers.from.includes(this.config.smtpUser);
   }
 
-  async moveThreadToFolder(threadId: string, ownerEmail: string, folderName: string): Promise<void> {
+  async moveThreadToFolder(
+    threadId: string,
+    ownerEmail: string,
+    folderName: string,
+  ): Promise<void> {
     const client = await this.getImapClient();
     await client.connect();
     try {

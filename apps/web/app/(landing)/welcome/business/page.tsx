@@ -2,7 +2,7 @@ import { BusinessOnboardingForm } from "./BusinessOnboardingForm";
 import { SquaresPattern } from "@/app/(landing)/home/SquaresPattern";
 import { PageHeading, TypographyP } from "@/components/Typography";
 import { CardBasic } from "@/components/ui/card";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Business Setup - Angri",
@@ -19,7 +19,7 @@ export default function BusinessWelcomePage() {
           <PageHeading>Welcome to Angri Business</PageHeading>
           <TypographyP>Let's tailor your workspace.</TypographyP>
         </div>
-        
+
         <BusinessOnboardingForm />
       </CardBasic>
     </div>

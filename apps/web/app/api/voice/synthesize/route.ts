@@ -1,22 +1,28 @@
 import { NextResponse } from "next/server";
 import { withEmailAccount } from "@/utils/middleware";
-import { streamTextToSpeech, type VoiceId } from "@/utils/voice/elevenlabs-client";
+import {
+  streamTextToSpeech,
+  type VoiceId,
+} from "@/utils/voice/elevenlabs-client";
 import { z } from "zod";
 
 export const maxDuration = 300;
 
 const synthesizeSchema = z.object({
   text: z.string().min(1).max(5000),
-  voiceId: z.enum([
-    "rachel",
-    "adam",
-    "domi",
-    "elli",
-    "josh",
-    "arnold",
-    "antoni",
-    "thomas",
-  ]).optional().default("rachel"),
+  voiceId: z
+    .enum([
+      "rachel",
+      "adam",
+      "domi",
+      "elli",
+      "josh",
+      "arnold",
+      "antoni",
+      "thomas",
+    ])
+    .optional()
+    .default("rachel"),
 });
 
 export const POST = withEmailAccount("voice-synthesize", async (request) => {
@@ -38,7 +44,10 @@ export const POST = withEmailAccount("voice-synthesize", async (request) => {
     const stream = new ReadableStream({
       async start(controller) {
         try {
-          for await (const chunk of streamTextToSpeech(text, voiceId as VoiceId)) {
+          for await (const chunk of streamTextToSpeech(
+            text,
+            voiceId as VoiceId,
+          )) {
             controller.enqueue(chunk);
           }
           controller.close();

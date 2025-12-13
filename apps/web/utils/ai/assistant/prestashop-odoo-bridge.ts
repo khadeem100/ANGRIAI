@@ -76,8 +76,16 @@ export async function syncPrestashopOrderToOdoo({
     throw new Error("Invalid Odoo connection configuration");
   }
 
-  const prestashop = new PrestashopClient({ baseUrl: psBaseUrl, apiKey: psApiKey });
-  const odoo = new OdooClient({ url: odooUrl, db: odooDb, username: odooUser, password: odooPassword });
+  const prestashop = new PrestashopClient({
+    baseUrl: psBaseUrl,
+    apiKey: psApiKey,
+  });
+  const odoo = new OdooClient({
+    url: odooUrl,
+    db: odooDb,
+    username: odooUser,
+    password: odooPassword,
+  });
 
   // 2. Fetch order from PrestaShop
   let order: any | null = null;
@@ -98,7 +106,9 @@ export async function syncPrestashopOrderToOdoo({
   }
 
   const reference: string | undefined = order.reference;
-  const prestashopOrderIdFinal: number | undefined = order.id ? Number(order.id) : undefined;
+  const prestashopOrderIdFinal: number | undefined = order.id
+    ? Number(order.id)
+    : undefined;
 
   if (!reference) {
     logger.warn("PrestaShop order has no reference", { order });
@@ -113,7 +123,11 @@ export async function syncPrestashopOrderToOdoo({
   });
 
   // 4. Build Odoo sale order lines from PrestaShop order rows
-  const orderLines = await buildOdooOrderLinesFromPrestashopOrder({ order, odoo, logger });
+  const orderLines = await buildOdooOrderLinesFromPrestashopOrder({
+    order,
+    odoo,
+    logger,
+  });
 
   // 5. Check if an Odoo order already exists for this PrestaShop reference to avoid duplicates
   let existingOrder: any | null = null;
@@ -200,7 +214,10 @@ async function ensureOdooCustomerForPrestashopOrder({
   const email: string | undefined = customer.email;
   const firstName: string | undefined = customer.firstname;
   const lastName: string | undefined = customer.lastname;
-  const fullName = [firstName, lastName].filter(Boolean).join(" ") || email || "PrestaShop customer";
+  const fullName =
+    [firstName, lastName].filter(Boolean).join(" ") ||
+    email ||
+    "PrestaShop customer";
 
   // Try to find existing partner by email or name
   const domain: any[] = [];
@@ -269,9 +286,13 @@ async function buildOdooOrderLinesFromPrestashopOrder({
     const productIdStr = row.product_id;
     const productRef: string | undefined = row.product_reference;
     const productName: string | undefined = row.product_name;
-    const quantity = Number(row.product_quantity ?? row.product_quantity_in_stock ?? 1) || 1;
+    const quantity =
+      Number(row.product_quantity ?? row.product_quantity_in_stock ?? 1) || 1;
     const unitPrice = Number(
-      row.unit_price_tax_excl ?? row.unit_price_tax_incl ?? row.original_product_price ?? 0,
+      row.unit_price_tax_excl ??
+        row.unit_price_tax_incl ??
+        row.original_product_price ??
+        0,
     );
 
     let odooProductId: number | null = null;
@@ -319,11 +340,14 @@ async function buildOdooOrderLinesFromPrestashopOrder({
           default_code: values.default_code,
         });
       } catch (error) {
-        logger.warn("Failed to create Odoo product from PrestaShop order line", {
-          error: error instanceof Error ? error.message : String(error),
-          productRef,
-          productName,
-        });
+        logger.warn(
+          "Failed to create Odoo product from PrestaShop order line",
+          {
+            error: error instanceof Error ? error.message : String(error),
+            productRef,
+            productName,
+          },
+        );
       }
     }
 
@@ -358,7 +382,8 @@ function normalizePrestashopOrder(raw: any): any | null {
 function normalizePrestashopCustomer(raw: any): any {
   if (!raw) return {};
   if (raw.customer) return raw.customer;
-  if (Array.isArray(raw.customers) && raw.customers.length > 0) return raw.customers[0];
+  if (Array.isArray(raw.customers) && raw.customers.length > 0)
+    return raw.customers[0];
   if (raw.customers && raw.customers.customer) return raw.customers.customer;
   return raw;
 }

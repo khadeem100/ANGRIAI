@@ -80,7 +80,7 @@ export class PrestashopClient {
 
   private async requestXml<T = any>(
     path: string,
-    method: "POST" | "PUT" | "DELETE", 
+    method: "POST" | "PUT" | "DELETE",
     xmlBody?: string,
   ): Promise<T> {
     const url = this.buildUrl(path);
@@ -97,7 +97,12 @@ export class PrestashopClient {
 
     if (!res.ok) {
       const text = await res.text().catch(() => "");
-      this.logger.error("PrestaShop API error", { status: res.status, body: text, path, method });
+      this.logger.error("PrestaShop API error", {
+        status: res.status,
+        body: text,
+        path,
+        method,
+      });
       throw new Error(text || `PrestaShop API error ${res.status}`);
     }
 
@@ -197,7 +202,12 @@ export class PrestashopClient {
   }
 
   async listProducts(
-    params: { limit?: number; reference?: string; name?: string; query?: string } = {},
+    params: {
+      limit?: number;
+      reference?: string;
+      name?: string;
+      query?: string;
+    } = {},
   ): Promise<any> {
     const search: Record<string, string> = { display: "full" };
     if (params.limit !== undefined) {
@@ -262,14 +272,19 @@ export class PrestashopClient {
   }
 
   async listStockAvailables(
-    params: { id_product?: number; id_product_attribute?: number; limit?: number } = {},
+    params: {
+      id_product?: number;
+      id_product_attribute?: number;
+      limit?: number;
+    } = {},
   ): Promise<any> {
     const search: Record<string, string> = { display: "full" };
     if (params.id_product !== undefined) {
       search["filter[id_product]"] = `[${params.id_product}]`;
     }
     if (params.id_product_attribute !== undefined) {
-      search["filter[id_product_attribute]"] = `[${params.id_product_attribute}]`;
+      search["filter[id_product_attribute]"] =
+        `[${params.id_product_attribute}]`;
     }
     if (params.limit !== undefined) {
       search.limit = String(params.limit);
@@ -281,7 +296,10 @@ export class PrestashopClient {
     return this.requestJson(`stock_availables/${id}`, { method: "GET" });
   }
 
-  async updateStockAvailableQuantity(id: number, quantity: number): Promise<any> {
+  async updateStockAvailableQuantity(
+    id: number,
+    quantity: number,
+  ): Promise<any> {
     const current = await this.getStockAvailableById(id);
     const stock = (current as any).stock_available ?? current;
 
@@ -300,7 +318,11 @@ export class PrestashopClient {
     return this.requestXml(resource, "POST", xmlBody);
   }
 
-  async updateResource(resource: string, id: number, xmlBody: string): Promise<any> {
+  async updateResource(
+    resource: string,
+    id: number,
+    xmlBody: string,
+  ): Promise<any> {
     return this.requestXml(`${resource}/${id}`, "PUT", xmlBody);
   }
 

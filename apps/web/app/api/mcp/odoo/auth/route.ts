@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 
 export const POST = withEmailAccount("mcp/odoo/auth", async (request) => {
   const emailAccountId = request.auth.emailAccountId;
-  
+
   try {
     const body = await request.json();
     const { url, db, username, password } = body;
@@ -31,7 +31,7 @@ export const POST = withEmailAccount("mcp/odoo/auth", async (request) => {
     });
 
     const uid = await client.connect();
-    
+
     // 2. Encrypt password
     const encryptedPassword = encryptToken(password);
     if (!encryptedPassword) {
@@ -84,37 +84,40 @@ export const POST = withEmailAccount("mcp/odoo/auth", async (request) => {
     // 5. Sync tools immediately (fake sync since we know the tools)
     // We can't use syncMcpTools because it expects an external serverUrl to be reachable
     // So we manually insert the tools defined in MCP_INTEGRATIONS
-    
+
     const integrationConfig = MCP_INTEGRATIONS[integrationName];
     const allowedTools = integrationConfig.allowedTools || [];
 
     const connection = await prisma.mcpConnection.findFirst({
-        where: {
-            emailAccountId,
-            integrationId: dbIntegration.id
-        }
+      where: {
+        emailAccountId,
+        integrationId: dbIntegration.id,
+      },
     });
 
     if (connection) {
-        await prisma.mcpTool.deleteMany({
-            where: { connectionId: connection.id }
-        });
+      await prisma.mcpTool.deleteMany({
+        where: { connectionId: connection.id },
+      });
 
-        await prisma.mcpTool.createMany({
-            data: allowedTools.map(name => ({
-                connectionId: connection.id,
-                name,
-                description: `Odoo tool: ${name}`,
-                isEnabled: true
-            }))
-        });
+      await prisma.mcpTool.createMany({
+        data: allowedTools.map((name) => ({
+          connectionId: connection.id,
+          name,
+          description: `Odoo tool: ${name}`,
+          isEnabled: true,
+        })),
+      });
     }
 
     return NextResponse.json({ success: true, uid });
   } catch (error) {
     console.error("Odoo connection error:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to connect to Odoo" },
+      {
+        error:
+          error instanceof Error ? error.message : "Failed to connect to Odoo",
+      },
       { status: 500 },
     );
   }

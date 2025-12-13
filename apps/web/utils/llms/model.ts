@@ -30,7 +30,7 @@ export function getModel(
   modelType: ModelType = "default",
 ): SelectModel {
   const data = selectModelByType(userAi, modelType);
-  
+
   // Generate fallbacks if not already present (prevent infinite recursion if we call getModel inside)
   if (!data.fallbacks) {
     data.fallbacks = getFallbacks(userAi, data);
@@ -47,7 +47,10 @@ export function getModel(
   return data;
 }
 
-function getFallbacks(userAi: UserAIFields, primary: SelectModel): SelectModel[] {
+function getFallbacks(
+  userAi: UserAIFields,
+  primary: SelectModel,
+): SelectModel[] {
   const fallbacks: SelectModel[] = [];
   const primaryId = `${primary.provider}:${primary.modelName}`;
 

@@ -212,9 +212,7 @@ export function IntegrationRow({
                 </div>
               ) : (
                 <Button size="sm" variant="outline" onClick={handleConnect}>
-                  {integration.authType === "api-token"
-                    ? "Connect"
-                    : "Connect"}
+                  {integration.authType === "api-token" ? "Connect" : "Connect"}
                 </Button>
               )}
             </div>

@@ -22,20 +22,23 @@ export function SignupForm() {
     e.preventDefault();
     setLoading(true);
     try {
-      await signUp.email({
-        email,
-        password,
-        name,
-        callbackURL: "/welcome/business",
-      }, {
-        onError: (ctx) => {
+      await signUp.email(
+        {
+          email,
+          password,
+          name,
+          callbackURL: "/welcome/business",
+        },
+        {
+          onError: (ctx) => {
             toast.error(ctx.error.message);
             setLoading(false);
-        },
-        onSuccess: () => {
+          },
+          onSuccess: () => {
             router.push("/welcome/business");
-        }
-      });
+          },
+        },
+      );
     } catch (err) {
       toast.error("Something went wrong");
       setLoading(false);
@@ -78,8 +81,13 @@ export function SignupForm() {
             minLength={8}
           />
         </div>
-        
-        <Button size="xl" loading={loading} type="submit" className="w-full mt-2">
+
+        <Button
+          size="xl"
+          loading={loading}
+          type="submit"
+          className="w-full mt-2"
+        >
           Create Account
         </Button>
       </form>
@@ -96,12 +104,16 @@ export function SignupForm() {
       </div>
 
       <div className="grid grid-cols-2 gap-2">
-        <UIButton variant="outline" className="w-full" onClick={async () => {
+        <UIButton
+          variant="outline"
+          className="w-full"
+          onClick={async () => {
             await signIn.social({
-                provider: "google",
-                callbackURL: "/welcome",
+              provider: "google",
+              callbackURL: "/welcome",
             });
-        }}>
+          }}
+        >
           <Image
             src="/images/google.svg"
             alt="Google"
@@ -112,12 +124,16 @@ export function SignupForm() {
           />
           Google
         </UIButton>
-        <UIButton variant="outline" className="w-full" onClick={async () => {
+        <UIButton
+          variant="outline"
+          className="w-full"
+          onClick={async () => {
             await signIn.social({
-                provider: "microsoft",
-                callbackURL: "/welcome",
+              provider: "microsoft",
+              callbackURL: "/welcome",
             });
-        }}>
+          }}
+        >
           <Image
             src="/images/microsoft.svg"
             alt="Microsoft"
@@ -132,7 +148,10 @@ export function SignupForm() {
 
       <p className="text-center text-sm text-muted-foreground mt-4">
         Already have an account?{" "}
-        <Link href="/login" className="underline underline-offset-4 hover:text-primary">
+        <Link
+          href="/login"
+          className="underline underline-offset-4 hover:text-primary"
+        >
           Log in
         </Link>
       </p>

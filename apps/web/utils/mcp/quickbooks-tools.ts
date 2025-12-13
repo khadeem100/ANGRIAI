@@ -16,20 +16,30 @@ const QB_TOOLS_SCHEMA = {
     description: "List invoices (QuickBooks Invoice)",
     parameters: z.object({
       limit: z.number().optional().default(10),
-      customer_id: z.string().optional().describe("QuickBooks CustomerRef value"),
+      customer_id: z
+        .string()
+        .optional()
+        .describe("QuickBooks CustomerRef value"),
       query: z.string().optional().describe("Filter by DocNumber"),
     }),
   },
   invoice_create: {
-    description: "Create an invoice for a customer (minimal fields: lines with description+amount)",
+    description:
+      "Create an invoice for a customer (minimal fields: lines with description+amount)",
     parameters: z.object({
-      customer_id: z.string().optional().describe("CustomerRef value (preferred)"),
-      customer_name: z.string().optional().describe("Fallback: DisplayName to find or create customer"),
+      customer_id: z
+        .string()
+        .optional()
+        .describe("CustomerRef value (preferred)"),
+      customer_name: z
+        .string()
+        .optional()
+        .describe("Fallback: DisplayName to find or create customer"),
       currency: z.string().optional().describe("e.g. USD, EUR"),
       lines_json: z
         .string()
         .describe(
-          'JSON array of lines. Each: { "description"?: string, "amount": number } (creates DescriptionOnly lines)'
+          'JSON array of lines. Each: { "description"?: string, "amount": number } (creates DescriptionOnly lines)',
         ),
     }),
   },
@@ -48,7 +58,9 @@ export const createQuickBooksTools = async (connection: McpConnection) => {
   const realmId: string | undefined = (metadata as any)?.realmId;
 
   if (!accessToken || !realmId) {
-    throw new Error("Invalid QuickBooks connection: missing access token or realmId");
+    throw new Error(
+      "Invalid QuickBooks connection: missing access token or realmId",
+    );
   }
 
   const client = new QuickBooksClient({ accessToken, realmId });
@@ -82,10 +94,20 @@ export const createQuickBooksTools = async (connection: McpConnection) => {
     invoice_list: tool({
       description: QB_TOOLS_SCHEMA.invoice_list.description,
       inputSchema: QB_TOOLS_SCHEMA.invoice_list.parameters,
-      execute: async ({ limit, customer_id, query }: { limit: number; customer_id?: string; query?: string }) => {
+      execute: async ({
+        limit,
+        customer_id,
+        query,
+      }: {
+        limit: number;
+        customer_id?: string;
+        query?: string;
+      }) => {
         const clauses: string[] = [];
-        if (customer_id) clauses.push(`CustomerRef = '${customer_id.replace(/'/g, "''")}'`);
-        if (query) clauses.push(`DocNumber like '%${query.replace(/'/g, "''")}%'`);
+        if (customer_id)
+          clauses.push(`CustomerRef = '${customer_id.replace(/'/g, "''")}'`);
+        if (query)
+          clauses.push(`DocNumber like '%${query.replace(/'/g, "''")}%'`);
         const where = clauses.length ? ` where ${clauses.join(" and ")}` : "";
         const sql = `select Id, DocNumber, Balance, TotalAmt, TxnDate, CustomerRef from Invoice${where} order by TxnDate desc`;
         const result = await client.query<any>(sql);
@@ -97,12 +119,26 @@ export const createQuickBooksTools = async (connection: McpConnection) => {
     invoice_create: tool({
       description: QB_TOOLS_SCHEMA.invoice_create.description,
       inputSchema: QB_TOOLS_SCHEMA.invoice_create.parameters,
-      execute: async ({ customer_id, customer_name, currency, lines_json }: { customer_id?: string; customer_name?: string; currency?: string; lines_json: string }) => {
+      execute: async ({
+        customer_id,
+        customer_name,
+        currency,
+        lines_json,
+      }: {
+        customer_id?: string;
+        customer_name?: string;
+        currency?: string;
+        lines_json: string;
+      }) => {
         let cid = customer_id;
         try {
           if (!cid && customer_name) {
             const cust = await findOrCreateCustomerByName(customer_name);
-            cid = (cust?.Id || cust?.Customer?.Id || cust?.Customer?.[0]?.Id)?.toString();
+            cid = (
+              cust?.Id ||
+              cust?.Customer?.Id ||
+              cust?.Customer?.[0]?.Id
+            )?.toString();
           }
         } catch {}
         if (!cid) return { error: "Customer not found or created" };
@@ -128,7 +164,11 @@ export const createQuickBooksTools = async (connection: McpConnection) => {
 
         const created = await client.createInvoice(payload);
         const invoice = created?.Invoice || created;
-        return { id: invoice?.Id, docNumber: invoice?.DocNumber, total: invoice?.TotalAmt };
+        return {
+          id: invoice?.Id,
+          docNumber: invoice?.DocNumber,
+          total: invoice?.TotalAmt,
+        };
       },
     }),
   } as const;

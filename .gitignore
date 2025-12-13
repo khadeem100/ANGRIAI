@@ -77,4 +77,5 @@ docker-compose.override.yml
 # cli logs
 logs
 
-coverage
+coveragehooks.json
+README.md

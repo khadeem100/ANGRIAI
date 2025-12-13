@@ -19,9 +19,9 @@ export function Integrations() {
 
   const integrations = data?.integrations || [];
   const uiError = error
-    ? ("info" in (error as any)
-        ? { info: (error as any).info }
-        : { error: (error as Error).message })
+    ? "info" in (error as any)
+      ? { info: (error as any).info }
+      : { error: (error as Error).message }
     : undefined;
 
   return (

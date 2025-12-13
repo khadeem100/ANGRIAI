@@ -1054,9 +1054,8 @@ Examples:
       : [];
 
   // Load connected App Store (MCP) tools for this email account (e.g., Odoo)
-  const { tools: mcpTools, cleanup } = await createMcpToolsForAgent(
-    emailAccountId,
-  );
+  const { tools: mcpTools, cleanup } =
+    await createMcpToolsForAgent(emailAccountId);
 
   // Merge built-in assistant tools with MCP tools
   const assistantTools: Record<string, Tool> = {
@@ -1092,7 +1091,8 @@ Examples:
             ),
         })
         .refine(
-          (v) => v.prestashopOrderId !== undefined || !!v.prestashopOrderReference,
+          (v) =>
+            v.prestashopOrderId !== undefined || !!v.prestashopOrderReference,
           {
             message:
               "You must provide either prestashopOrderId or prestashopOrderReference",
@@ -1107,7 +1107,10 @@ Examples:
         prestashopOrderReference?: string;
         confirmOrder?: boolean;
       }) => {
-        trackToolCall({ tool: "sync_prestashop_order_to_odoo", email: user.email });
+        trackToolCall({
+          tool: "sync_prestashop_order_to_odoo",
+          email: user.email,
+        });
         return syncPrestashopOrderToOdoo({
           emailAccountId,
           prestashopOrderId,

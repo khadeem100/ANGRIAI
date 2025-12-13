@@ -74,7 +74,8 @@ const ODOO_TOOLS_SCHEMA = {
     }),
   },
   invoice_list: {
-    description: "List customer invoices (account.move with move_type out_invoice/out_refund)",
+    description:
+      "List customer invoices (account.move with move_type out_invoice/out_refund)",
     parameters: z.object({
       limit: z.number().optional().default(5),
       partner_id: z.number().optional().describe("Filter by customer id"),
@@ -91,7 +92,10 @@ const ODOO_TOOLS_SCHEMA = {
         .describe(
           'JSON array of order lines. Each item: { "product_id"?: number, "product"?: string, "name"?: string, "qty": number, "price_unit"?: number }',
         ),
-      confirm: z.boolean().optional().describe("Confirm the order after create"),
+      confirm: z
+        .boolean()
+        .optional()
+        .describe("Confirm the order after create"),
       note: z.string().optional().describe("Optional note on the order"),
     }),
   },
@@ -273,7 +277,13 @@ export const createOdooTools = async (connection: McpConnection) => {
     project_task_list: tool({
       description: ODOO_TOOLS_SCHEMA.project_task_list.description,
       inputSchema: ODOO_TOOLS_SCHEMA.project_task_list.parameters,
-      execute: async ({ limit, project_id }: { limit: number; project_id?: number }) => {
+      execute: async ({
+        limit,
+        project_id,
+      }: {
+        limit: number;
+        project_id?: number;
+      }) => {
         const domain = project_id ? [["project_id", "=", project_id]] : [];
         return client.searchRead(
           "project.task",
@@ -408,7 +418,8 @@ export const createOdooTools = async (connection: McpConnection) => {
             product_uom_qty: l.qty ?? 1,
           };
           if (pid) lineVals.product_id = pid;
-          if (typeof l.price_unit === "number") lineVals.price_unit = l.price_unit;
+          if (typeof l.price_unit === "number")
+            lineVals.price_unit = l.price_unit;
           if (!pid && l.name) lineVals.name = l.name;
           orderLineCommands.push([0, 0, lineVals]);
         }
@@ -439,7 +450,13 @@ export const createOdooTools = async (connection: McpConnection) => {
     sale_order_detail: tool({
       description: ODOO_TOOLS_SCHEMA.sale_order_detail.description,
       inputSchema: ODOO_TOOLS_SCHEMA.sale_order_detail.parameters,
-      execute: async ({ order_id, name }: { order_id?: number; name?: string }) => {
+      execute: async ({
+        order_id,
+        name,
+      }: {
+        order_id?: number;
+        name?: string;
+      }) => {
         let order: any | null = null;
         if (!order_id && name) {
           const found = await client.searchRead(
@@ -463,7 +480,13 @@ export const createOdooTools = async (connection: McpConnection) => {
         const lines = await client.searchRead(
           "sale.order.line",
           [["order_id", "=", order_id]],
-          ["product_id", "product_uom_qty", "price_unit", "price_total", "name"],
+          [
+            "product_id",
+            "product_uom_qty",
+            "price_unit",
+            "price_total",
+            "name",
+          ],
           100,
         );
         return { order, lines };
@@ -511,7 +534,8 @@ export const createOdooTools = async (connection: McpConnection) => {
             quantity: l.qty ?? 1,
           };
           if (pid) lineVals.product_id = pid;
-          if (typeof l.price_unit === "number") lineVals.price_unit = l.price_unit;
+          if (typeof l.price_unit === "number")
+            lineVals.price_unit = l.price_unit;
           if (!pid && l.name) lineVals.name = l.name;
           invoiceLineCommands.push([0, 0, lineVals]);
         }
@@ -543,7 +567,13 @@ export const createOdooTools = async (connection: McpConnection) => {
     invoice_detail: tool({
       description: ODOO_TOOLS_SCHEMA.invoice_detail.description,
       inputSchema: ODOO_TOOLS_SCHEMA.invoice_detail.parameters,
-      execute: async ({ move_id, name }: { move_id?: number; name?: string }) => {
+      execute: async ({
+        move_id,
+        name,
+      }: {
+        move_id?: number;
+        name?: string;
+      }) => {
         if (!move_id && name) {
           const found = await client.searchRead(
             "account.move",
@@ -584,11 +614,7 @@ export const createOdooTools = async (connection: McpConnection) => {
       inputSchema: ODOO_TOOLS_SCHEMA.product_list.parameters,
       execute: async ({ limit, query }: { limit: number; query?: string }) => {
         const domain: any[] = query
-          ? [
-              "|",
-              ["name", "ilike", query],
-              ["default_code", "ilike", query],
-            ]
+          ? ["|", ["name", "ilike", query], ["default_code", "ilike", query]]
           : [];
         return client.searchRead(
           "product.product",
@@ -652,10 +678,16 @@ export const createOdooTools = async (connection: McpConnection) => {
         });
 
         try {
-          await client.execute("stock.change.product.qty", "change_product_qty", [[wizardId]]);
+          await client.execute(
+            "stock.change.product.qty",
+            "change_product_qty",
+            [[wizardId]],
+          );
         } catch (error) {
           const message =
-            error instanceof Error ? error.message : String(error ?? "Unknown error");
+            error instanceof Error
+              ? error.message
+              : String(error ?? "Unknown error");
           return {
             error: "Failed to apply stock change in Odoo",
             message,

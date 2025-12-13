@@ -135,7 +135,7 @@ export function isRateLimitError(error: unknown): boolean {
       error.message.toLowerCase().includes("too many requests")
     );
   }
-  
+
   if (error instanceof Error) {
     return (
       error.message.toLowerCase().includes("quota") ||

@@ -2,7 +2,7 @@ import { SignupForm } from "./SignupForm";
 import { SquaresPattern } from "@/app/(landing)/home/SquaresPattern";
 import { PageHeading, TypographyP } from "@/components/Typography";
 import { CardBasic } from "@/components/ui/card";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Sign Up - Angri",
@@ -19,7 +19,7 @@ export default function SignupPage() {
           <PageHeading>Create an account</PageHeading>
           <TypographyP>Get started with Angri for Business</TypographyP>
         </div>
-        
+
         <SignupForm />
       </CardBasic>
     </div>

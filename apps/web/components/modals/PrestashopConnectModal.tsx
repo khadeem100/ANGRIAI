@@ -28,7 +28,9 @@ import { useAccount } from "@/providers/EmailAccountProvider";
 
 function normalizeBaseUrl(input: string): string {
   const trimmed = String(input).trim();
-  const withScheme = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+  const withScheme = /^https?:\/\//i.test(trimmed)
+    ? trimmed
+    : `https://${trimmed}`;
   return new URL(withScheme).toString();
 }
 
@@ -95,7 +97,9 @@ export function PrestashopConnectModal({
       toastError({
         title: "Connection Failed",
         description:
-          error instanceof Error ? error.message : "Could not connect to PrestaShop",
+          error instanceof Error
+            ? error.message
+            : "Could not connect to PrestaShop",
       });
     } finally {
       setIsLoading(false);
@@ -121,10 +125,7 @@ export function PrestashopConnectModal({
                 <FormItem>
                   <FormLabel>Shop URL</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="https://gato.nl"
-                      {...field}
-                    />
+                    <Input placeholder="https://gato.nl" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

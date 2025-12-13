@@ -10,7 +10,9 @@ export const dynamic = "force-dynamic";
 
 function normalizeBaseUrl(input: string): string {
   const trimmed = String(input).trim();
-  const withScheme = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+  const withScheme = /^https?:\/\//i.test(trimmed)
+    ? trimmed
+    : `https://${trimmed}`;
   return new URL(withScheme).toString();
 }
 
@@ -102,7 +104,9 @@ export const POST = withEmailAccount("mcp/prestashop/auth", async (request) => {
     return NextResponse.json(
       {
         error:
-          error instanceof Error ? error.message : "Failed to connect to PrestaShop",
+          error instanceof Error
+            ? error.message
+            : "Failed to connect to PrestaShop",
       },
       { status: 500 },
     );

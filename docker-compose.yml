@@ -44,7 +44,7 @@ services:
       - ./apps/web/.env
     environment:
       SRH_MODE: env
-      SRH_TOKEN: ${UPSTASH_REDIS_TOKEN}
+      SRH_TOKEN: ${UPSTASH_REDIS_TOKEN:-devtoken}
       SRH_CONNECTION_STRING: "redis://redis:6379" # Using `redis` hostname since they're in the same Docker network.
     networks:
       - inbox-zero-network
@@ -90,11 +90,7 @@ services:
     networks:
       - inbox-zero-network
     environment:
-      NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL:-http://localhost:3000}
-      DATABASE_URL: ${DATABASE_URL:-postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-password}@db:5432/${POSTGRES_DB:-inboxzero}?schema=public}
-      DIRECT_URL: ${DIRECT_URL:-postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-password}@db:5432/${POSTGRES_DB:-inboxzero}?schema=public}
-      UPSTASH_REDIS_URL: ${UPSTASH_REDIS_URL:-http://serverless-redis-http:80}
-      UPSTASH_REDIS_TOKEN: "${UPSTASH_REDIS_TOKEN}"
+      NEXT_PUBLIC_BASE_URL: https://angri.nl
     deploy:
       resources:
         limits:

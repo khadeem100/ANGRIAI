@@ -25,31 +25,36 @@ async function syncImapAccounts() {
 
   for (const { emailAccountId } of accounts) {
     const accountLogger = logger.with({ emailAccountId });
-    
+
     try {
       const emailAccount = await prisma.emailAccount.findUnique({
         where: { id: emailAccountId },
         include: {
-            account: true,
-            rules: {
-                include: {
-                    actions: true,
-                }
+          account: true,
+          rules: {
+            include: {
+              actions: true,
             },
-            user: {
-                include: {
-                    premium: true,
-                }
-            }
-        }
+          },
+          user: {
+            include: {
+              premium: true,
+            },
+          },
+        },
       });
 
       if (!emailAccount) continue;
 
       // Validate account state (similar to webhook validation)
-      const validation = await validateWebhookAccount(emailAccount, accountLogger);
+      const validation = await validateWebhookAccount(
+        emailAccount,
+        accountLogger,
+      );
       if (!validation.success) {
-        accountLogger.warn("Account validation failed", { response: validation.response });
+        accountLogger.warn("Account validation failed", {
+          response: validation.response,
+        });
         continue;
       }
 
@@ -71,12 +76,17 @@ async function syncImapAccounts() {
       }
 
       // Treat lastSyncedHistoryId as the last UID synced
-      const lastUid = parseInt(emailAccount.lastSyncedHistoryId || "0", 10);
-      
+      const lastUid = Number.parseInt(
+        emailAccount.lastSyncedHistoryId || "0",
+        10,
+      );
+
       accountLogger.info("Fetching messages", { lastUid });
-      
-      const messages = await provider.getMessagesAfterUid(isNaN(lastUid) ? 0 : lastUid);
-      
+
+      const messages = await provider.getMessagesAfterUid(
+        isNaN(lastUid) ? 0 : lastUid,
+      );
+
       if (messages.length === 0) {
         accountLogger.info("No new messages");
         continue;
@@ -87,14 +97,14 @@ async function syncImapAccounts() {
       let maxUid = lastUid;
 
       for (const message of messages) {
-        const uid = parseInt(message.id, 10);
+        const uid = Number.parseInt(message.id, 10);
         if (!isNaN(uid) && uid > maxUid) {
-            maxUid = uid;
+          maxUid = uid;
         }
 
         await processHistoryItem(
           {
-            messageId: message.id, // for IMAP we use UID as messageId in our system mostly, or should we use message-id header? 
+            messageId: message.id, // for IMAP we use UID as messageId in our system mostly, or should we use message-id header?
             // processHistoryItem expects messageId to be retrievable via provider.getMessage(id).
             // ImapProvider.getMessage(id) expects UID as id.
             // So message.id (which is UID in ImapProvider) is correct.
@@ -107,20 +117,19 @@ async function syncImapAccounts() {
             hasAiAccess,
             rules: validatedEmailAccount.rules,
             logger: accountLogger,
-          }
+          },
         );
       }
 
       // Update lastSyncedHistoryId
       if (maxUid > lastUid) {
         await prisma.emailAccount.update({
-            where: { id: emailAccountId },
-            data: {
-                lastSyncedHistoryId: maxUid.toString(),
-            }
+          where: { id: emailAccountId },
+          data: {
+            lastSyncedHistoryId: maxUid.toString(),
+          },
         });
       }
-
     } catch (error) {
       accountLogger.error("Error syncing IMAP account", { error });
       captureException(error, { extra: { emailAccountId } });

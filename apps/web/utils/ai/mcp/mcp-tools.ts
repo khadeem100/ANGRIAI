@@ -69,7 +69,7 @@ export async function createMcpToolsForAgent(
 
     for (const connection of connections) {
       const integration = connection.integration;
-      
+
       // Handle Odoo specially
       if (integration.name === "odoo") {
         try {
@@ -80,7 +80,7 @@ export async function createMcpToolsForAgent(
               enabledToolNames.includes(toolName),
             ),
           );
-          
+
           toolsByIntegration.set(integration.id, {
             integrationName: integration.name,
             tools: filteredTools,

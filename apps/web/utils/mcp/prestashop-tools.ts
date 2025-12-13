@@ -7,7 +7,8 @@ import { decryptToken } from "@/utils/encryption";
 
 const PRESTASHOP_TOOLS_SCHEMA = {
   customers_list: {
-    description: "List customers from PrestaShop (optionally filter by email or name)",
+    description:
+      "List customers from PrestaShop (optionally filter by email or name)",
     parameters: z.object({
       limit: z.number().optional().default(10),
       email: z.string().optional().describe("Filter by exact email address"),
@@ -35,8 +36,14 @@ const PRESTASHOP_TOOLS_SCHEMA = {
       email: z.string().optional().describe("Exact email address"),
       firstname: z.string().optional().describe("First name (partial)"),
       lastname: z.string().optional().describe("Last name (partial)"),
-      company: z.string().optional().describe("Business/company name (partial, searched in addresses)"),
-      phone: z.string().optional().describe("Phone (partial, searched in addresses)"),
+      company: z
+        .string()
+        .optional()
+        .describe("Business/company name (partial, searched in addresses)"),
+      phone: z
+        .string()
+        .optional()
+        .describe("Phone (partial, searched in addresses)"),
       phone_mobile: z
         .string()
         .optional()
@@ -91,11 +98,16 @@ const PRESTASHOP_TOOLS_SCHEMA = {
         .string()
         .optional()
         .describe("Filter by product reference/SKU (partial match)"),
-      name: z.string().optional().describe("Filter by product name (partial match)"),
+      name: z
+        .string()
+        .optional()
+        .describe("Filter by product name (partial match)"),
       query: z
         .string()
         .optional()
-        .describe("Best-effort query: matches name and/or reference when possible"),
+        .describe(
+          "Best-effort query: matches name and/or reference when possible",
+        ),
     }),
   },
   products_search: {
@@ -266,7 +278,9 @@ const PRESTASHOP_TOOLS_SCHEMA = {
       product_attribute_id: z
         .number()
         .optional()
-        .describe("Filter by PrestaShop product attribute ID (id_product_attribute)"),
+        .describe(
+          "Filter by PrestaShop product attribute ID (id_product_attribute)",
+        ),
     }),
   },
   stock_update_quantity: {
@@ -319,7 +333,13 @@ export const createPrestashopTools = async (connection: McpConnection) => {
         lastname?: string;
         query?: string;
       }) => {
-        return client.listCustomers({ limit, email, firstname, lastname, query });
+        return client.listCustomers({
+          limit,
+          email,
+          firstname,
+          lastname,
+          query,
+        });
       },
     }),
     customers_search: tool({
@@ -370,17 +390,21 @@ export const createPrestashopTools = async (connection: McpConnection) => {
             phone,
             phone_mobile,
           });
-          const addresses = Array.isArray(addr?.addresses) ? addr.addresses : [];
+          const addresses = Array.isArray(addr?.addresses)
+            ? addr.addresses
+            : [];
           const customerIds = new Set<number>();
           for (const a of addresses) {
-            if (a?.id_customer !== undefined) customerIds.add(Number(a.id_customer));
+            if (a?.id_customer !== undefined)
+              customerIds.add(Number(a.id_customer));
           }
           await Promise.all(
             Array.from(customerIds).map(async (id) => {
               try {
                 const c = await client.getCustomerById(id);
                 const customer = (c as any)?.customer ?? c;
-                if (customer?.id !== undefined) resultsById.set(Number(customer.id), customer);
+                if (customer?.id !== undefined)
+                  resultsById.set(Number(customer.id), customer);
               } catch {
                 // ignore
               }
@@ -469,7 +493,13 @@ export const createPrestashopTools = async (connection: McpConnection) => {
     products_get: tool({
       description: PRESTASHOP_TOOLS_SCHEMA.products_get.description,
       inputSchema: PRESTASHOP_TOOLS_SCHEMA.products_get.parameters,
-      execute: async ({ id, reference }: { id?: number; reference?: string }) => {
+      execute: async ({
+        id,
+        reference,
+      }: {
+        id?: number;
+        reference?: string;
+      }) => {
         if (id !== undefined) {
           return client.getProductById(id);
         }
@@ -525,7 +555,13 @@ export const createPrestashopTools = async (connection: McpConnection) => {
     orders_get: tool({
       description: PRESTASHOP_TOOLS_SCHEMA.orders_get.description,
       inputSchema: PRESTASHOP_TOOLS_SCHEMA.orders_get.parameters,
-      execute: async ({ id, reference }: { id?: number; reference?: string }) => {
+      execute: async ({
+        id,
+        reference,
+      }: {
+        id?: number;
+        reference?: string;
+      }) => {
         if (id !== undefined) {
           return client.getOrderById(id);
         }
@@ -581,22 +617,28 @@ export const createPrestashopTools = async (connection: McpConnection) => {
       },
     }),
     customer_threads_create_xml: tool({
-      description: PRESTASHOP_TOOLS_SCHEMA.customer_threads_create_xml.description,
-      inputSchema: PRESTASHOP_TOOLS_SCHEMA.customer_threads_create_xml.parameters,
+      description:
+        PRESTASHOP_TOOLS_SCHEMA.customer_threads_create_xml.description,
+      inputSchema:
+        PRESTASHOP_TOOLS_SCHEMA.customer_threads_create_xml.parameters,
       execute: async ({ xml }: { xml: string }) => {
         return client.createResource("customer_threads", xml);
       },
     }),
     customer_threads_update_xml: tool({
-      description: PRESTASHOP_TOOLS_SCHEMA.customer_threads_update_xml.description,
-      inputSchema: PRESTASHOP_TOOLS_SCHEMA.customer_threads_update_xml.parameters,
+      description:
+        PRESTASHOP_TOOLS_SCHEMA.customer_threads_update_xml.description,
+      inputSchema:
+        PRESTASHOP_TOOLS_SCHEMA.customer_threads_update_xml.parameters,
       execute: async ({ id, xml }: { id: number; xml: string }) => {
         return client.updateResource("customer_threads", id, xml);
       },
     }),
     customer_messages_create_xml: tool({
-      description: PRESTASHOP_TOOLS_SCHEMA.customer_messages_create_xml.description,
-      inputSchema: PRESTASHOP_TOOLS_SCHEMA.customer_messages_create_xml.parameters,
+      description:
+        PRESTASHOP_TOOLS_SCHEMA.customer_messages_create_xml.description,
+      inputSchema:
+        PRESTASHOP_TOOLS_SCHEMA.customer_messages_create_xml.parameters,
       execute: async ({ xml }: { xml: string }) => {
         return client.createResource("customer_messages", xml);
       },
@@ -630,7 +672,10 @@ export const createPrestashopTools = async (connection: McpConnection) => {
         stock_available_id: number;
         quantity: number;
       }) => {
-        return client.updateStockAvailableQuantity(stock_available_id, quantity);
+        return client.updateStockAvailableQuantity(
+          stock_available_id,
+          quantity,
+        );
       },
     }),
   } as const;

@@ -165,15 +165,12 @@ export const MCP_INTEGRATIONS: Record<
     serverUrl: "https://quickbooks.api.intuit.com",
     authType: "oauth",
     scopes: ["com.intuit.quickbooks.accounting"],
-    allowedTools: [
-      "customer_list",
-      "invoice_list",
-      "invoice_create",
-    ],
+    allowedTools: ["customer_list", "invoice_list", "invoice_create"],
     // QuickBooks does not expose RFC discovery, so we provide static endpoints
     oauthConfig: {
       authorization_endpoint: "https://appcenter.intuit.com/connect/oauth2",
-      token_endpoint: "https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer",
+      token_endpoint:
+        "https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer",
     },
     comingSoon: false,
   },

@@ -94,7 +94,11 @@ export function createGenerateText({
     };
 
     // Construct execution plan: Primary -> Backup (legacy) -> Fallbacks
-    const executionPlan: { model: LanguageModelV2; name: string; provider: string }[] = [
+    const executionPlan: {
+      model: LanguageModelV2;
+      name: string;
+      provider: string;
+    }[] = [
       {
         model: modelOptions.model,
         name: modelOptions.modelName,
@@ -170,7 +174,7 @@ export function createGenerateText({
       );
       throw lastError;
     }
-    
+
     throw new Error("Unexpected error: No models available in execution plan");
   };
 }
@@ -186,7 +190,11 @@ export function createGenerateObject({
 }): typeof generateObject {
   return async (...args) => {
     // Construct execution plan: Primary -> Backup (legacy) -> Fallbacks
-    const executionPlan: { model: LanguageModelV2; name: string; provider: string }[] = [
+    const executionPlan: {
+      model: LanguageModelV2;
+      name: string;
+      provider: string;
+    }[] = [
       {
         model: modelOptions.model,
         name: modelOptions.modelName,
@@ -218,7 +226,7 @@ export function createGenerateObject({
     // Loop through available models
     for (let i = 0; i < executionPlan.length; i++) {
       const plan = executionPlan[i];
-      
+
       // If falling back to a new model
       if (i > 0) {
         logger.info("Falling back to next model for generateObject", {
@@ -299,7 +307,10 @@ export function createGenerateObject({
             isServiceUnavailableError(error) ||
             isAWSThrottlingError(error)
           ) {
-            logger.warn("Rate limit/quota error, switching model", { error, model: plan.name });
+            logger.warn("Rate limit/quota error, switching model", {
+              error,
+              model: plan.name,
+            });
             break; // Break attempt loop, continue to next model in outer loop
           }
 
@@ -323,7 +334,7 @@ export function createGenerateObject({
           }
 
           // 3. Other errors -> Fail fast (don't retry same model, don't fallback)
-          // UNLESS we decide other errors should also trigger fallback? 
+          // UNLESS we decide other errors should also trigger fallback?
           // generally "Invalid API Key" etc should probably fail fast.
           await handleError(
             error,
@@ -374,13 +385,14 @@ export async function chatCompletionStream({
   onFinish?: StreamTextOnFinishCallback<Record<string, Tool>>;
   onStepFinish?: StreamTextOnStepFinishCallback<Record<string, Tool>>;
 }) {
-  const modelOptions = getModel(
-    userAi,
-    modelType,
-  );
+  const modelOptions = getModel(userAi, modelType);
 
   // Construct execution plan: Primary -> Backup -> Fallbacks
-  const executionPlan: { model: LanguageModelV2; name: string; provider: string }[] = [
+  const executionPlan: {
+    model: LanguageModelV2;
+    name: string;
+    provider: string;
+  }[] = [
     {
       model: modelOptions.model,
       name: modelOptions.modelName,
@@ -410,7 +422,7 @@ export async function chatCompletionStream({
 
   for (let i = 0; i < executionPlan.length; i++) {
     const plan = executionPlan[i];
-    
+
     try {
       if (i > 0) {
         logger.info("Falling back to next model for chatCompletionStream", {
@@ -480,7 +492,7 @@ export async function chatCompletionStream({
       return result;
     } catch (error) {
       lastError = error;
-      
+
       // Only fallback on specific errors for the initial call
       if (
         isRateLimitError(error) ||
@@ -497,7 +509,7 @@ export async function chatCompletionStream({
   if (lastError) {
     throw lastError;
   }
-  
+
   throw new Error("Unexpected error: No models available in execution plan");
 }
 

@@ -27,7 +27,9 @@ import { fetchWithAccount } from "@/utils/fetch";
 import { useAccount } from "@/providers/EmailAccountProvider";
 
 const formSchema = z.object({
-  url: z.string().url("Please enter a valid URL (e.g. https://my-company.odoo.com)"),
+  url: z
+    .string()
+    .url("Please enter a valid URL (e.g. https://my-company.odoo.com)"),
   db: z.string().min(1, "Database name is required"),
   username: z.string().min(1, "Username is required"),
   password: z.string().min(1, "Password or API Key is required"),
@@ -39,7 +41,11 @@ interface OdooConnectModalProps {
   onSuccess: () => void;
 }
 
-export function OdooConnectModal({ isOpen, onClose, onSuccess }: OdooConnectModalProps) {
+export function OdooConnectModal({
+  isOpen,
+  onClose,
+  onSuccess,
+}: OdooConnectModalProps) {
   const { emailAccountId } = useAccount();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -79,7 +85,8 @@ export function OdooConnectModal({ isOpen, onClose, onSuccess }: OdooConnectModa
     } catch (error) {
       toastError({
         title: "Connection Failed",
-        description: error instanceof Error ? error.message : "Could not connect to Odoo",
+        description:
+          error instanceof Error ? error.message : "Could not connect to Odoo",
       });
     } finally {
       setIsLoading(false);
@@ -104,7 +111,10 @@ export function OdooConnectModal({ isOpen, onClose, onSuccess }: OdooConnectModa
                 <FormItem>
                   <FormLabel>Odoo URL</FormLabel>
                   <FormControl>
-                    <Input placeholder="https://my-company.odoo.com" {...field} />
+                    <Input
+                      placeholder="https://my-company.odoo.com"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

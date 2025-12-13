@@ -47,7 +47,11 @@ export async function syncMcpTools(
       throw new Error(`No active connection found for ${integration}`);
     }
 
-    let allTools: Array<{ name: string; description?: string; inputSchema?: unknown }>;
+    let allTools: Array<{
+      name: string;
+      description?: string;
+      inputSchema?: unknown;
+    }>;
 
     if (integration === "odoo") {
       allTools = getOdooToolDefinitions();

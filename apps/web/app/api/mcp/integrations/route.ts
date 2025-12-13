@@ -26,7 +26,11 @@ async function getData(emailAccountId: string) {
   // Best-effort: ensure PrestaShop tools are synced as well
   try {
     const activePrestashop = await prisma.mcpConnection.findFirst({
-      where: { emailAccountId, isActive: true, integration: { name: "prestashop" } },
+      where: {
+        emailAccountId,
+        isActive: true,
+        integration: { name: "prestashop" },
+      },
       select: { id: true },
     });
     if (activePrestashop) {

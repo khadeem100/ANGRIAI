@@ -70,7 +70,9 @@ export function VoiceVisualizer({
           height = 4 + (value / 255) * (rect.height * 0.8);
         } else if (state === "speaking") {
           // Fake speaking waveform
-          height = 4 + Math.sin(phase * 0.2 + i * 0.5) * (Math.sin(phase * 0.1) * 10 + 15);
+          height =
+            4 +
+            Math.sin(phase * 0.2 + i * 0.5) * (Math.sin(phase * 0.1) * 10 + 15);
         }
 
         // Mirror the bars around the center
@@ -82,10 +84,10 @@ export function VoiceVisualizer({
         ctx.beginPath();
         // @ts-ignore - roundRect is new
         if (ctx.roundRect) {
-            // @ts-ignore
-            ctx.roundRect(x + 1, y, barWidth - 2, height, 4);
+          // @ts-ignore
+          ctx.roundRect(x + 1, y, barWidth - 2, height, 4);
         } else {
-            ctx.rect(x + 1, y, barWidth - 2, height);
+          ctx.rect(x + 1, y, barWidth - 2, height);
         }
         ctx.fill();
       }
@@ -107,11 +109,10 @@ export function VoiceVisualizer({
   if (state === "idle") return null;
 
   return (
-    <div className={cn("flex items-center justify-center h-12 w-full", className)}>
-      <canvas
-        ref={canvasRef}
-        className="h-full w-full rounded-md opacity-90"
-      />
+    <div
+      className={cn("flex items-center justify-center h-12 w-full", className)}
+    >
+      <canvas ref={canvasRef} className="h-full w-full rounded-md opacity-90" />
     </div>
   );
 }

@@ -9,7 +9,10 @@ export function createDeepgramClient() {
   return createClient(env.DEEPGRAM_API_KEY);
 }
 
-export type TranscriptionCallback = (transcript: string, isFinal: boolean) => void;
+export type TranscriptionCallback = (
+  transcript: string,
+  isFinal: boolean,
+) => void;
 
 export async function startLiveTranscription(
   onTranscript: TranscriptionCallback,

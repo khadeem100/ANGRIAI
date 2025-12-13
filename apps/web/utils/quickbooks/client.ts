@@ -6,7 +6,11 @@ export class QuickBooksClient {
   private baseUrl: string;
   private logger = createScopedLogger("quickbooks-client");
 
-  constructor({ accessToken, realmId, baseUrl = "https://quickbooks.api.intuit.com" }: {
+  constructor({
+    accessToken,
+    realmId,
+    baseUrl = "https://quickbooks.api.intuit.com",
+  }: {
     accessToken: string;
     realmId: string;
     baseUrl?: string;
@@ -21,8 +25,8 @@ export class QuickBooksClient {
     const res = await fetch(url, {
       ...init,
       headers: {
-        "Authorization": `Bearer ${this.accessToken}`,
-        "Accept": "application/json",
+        Authorization: `Bearer ${this.accessToken}`,
+        Accept: "application/json",
         "Content-Type": "application/json",
         ...(init?.headers || {}),
       },
@@ -30,7 +34,11 @@ export class QuickBooksClient {
 
     if (!res.ok) {
       const text = await res.text().catch(() => "");
-      this.logger.error("QuickBooks API error", { status: res.status, body: text, path });
+      this.logger.error("QuickBooks API error", {
+        status: res.status,
+        body: text,
+        path,
+      });
       throw new Error(text || `QuickBooks API error ${res.status}`);
     }
 
@@ -47,11 +55,17 @@ export class QuickBooksClient {
 
   async createInvoice(payload: any, minorVersion = 65): Promise<any> {
     const path = `/v3/company/${this.realmId}/invoice?minorversion=${minorVersion}`;
-    return this.request<any>(path, { method: "POST", body: JSON.stringify(payload) });
+    return this.request<any>(path, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
   }
 
   async createCustomer(payload: any, minorVersion = 65): Promise<any> {
     const path = `/v3/company/${this.realmId}/customer?minorversion=${minorVersion}`;
-    return this.request<any>(path, { method: "POST", body: JSON.stringify(payload) });
+    return this.request<any>(path, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
   }
 }
