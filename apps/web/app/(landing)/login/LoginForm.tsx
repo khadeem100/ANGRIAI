@@ -16,14 +16,44 @@ import {
 } from "@/components/ui/dialog";
 import { signIn } from "@/utils/auth-client";
 import { WELCOME_PATH } from "@/utils/config";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export function LoginForm() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const next = searchParams?.get("next");
   const error = searchParams?.get("error");
 
   const [loadingGoogle, setLoadingGoogle] = useState(false);
   const [loadingMicrosoft, setLoadingMicrosoft] = useState(false);
+  const [loadingEmail, setLoadingEmail] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleEmailSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoadingEmail(true);
+    await signIn.email(
+      {
+        email,
+        password,
+        callbackURL: next && next.length > 0 ? next : WELCOME_PATH,
+      },
+      {
+        onError: (ctx) => {
+          toast.error(ctx.error.message);
+          setLoadingEmail(false);
+        },
+        onSuccess: () => {
+          // Redirect handled by callbackURL
+          setLoadingEmail(false);
+        },
+      },
+    );
+  };
 
   const handleGoogleSignIn = async () => {
     setLoadingGoogle(true);
@@ -48,66 +78,106 @@ export function LoginForm() {
   };
 
   return (
-    <div className="flex flex-col justify-center gap-2 px-4 sm:px-16">
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button size="2xl">
-            <span className="flex items-center justify-center">
+    <div className="flex flex-col justify-center gap-4 px-4 sm:px-16">
+      <form onSubmit={handleEmailSignIn} className="flex flex-col gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            type="email"
+            placeholder="name@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="password">Wachtwoord</Label>
+          <Input
+            id="password"
+            type="password"
+            placeholder="••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+        <Button size="xl" loading={loadingEmail} type="submit">
+          Inloggen
+        </Button>
+      </form>
+
+      <div className="relative my-2">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-white px-2 text-muted-foreground">
+            Of ga verder met
+          </span>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2">
+        <Dialog>
+          <DialogTrigger asChild>
+            <UIButton variant="outline" className="w-full">
               <Image
                 src="/images/google.svg"
-                alt=""
-                width={24}
-                height={24}
+                alt="Google"
+                width={16}
+                height={16}
+                className="mr-2"
                 unoptimized
               />
-              <span className="ml-2">Inloggen met Google</span>
-            </span>
-          </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Inloggen</DialogTitle>
-          </DialogHeader>
-          <SectionDescription>
-            Het gebruik en de overdracht door Angri AI van informatie ontvangen
-            van Google API's aan een andere app voldoet aan het{" "}
-            <a
-              href="https://developers.google.com/terms/api-services-user-data-policy"
-              className="underline underline-offset-4 hover:text-gray-900"
-            >
-              Google API Services User Data
-            </a>{" "}
-            Policy, inclusief de Limited Use-vereisten.
-          </SectionDescription>
-          <div>
-            <Button loading={loadingGoogle} onClick={handleGoogleSignIn}>
-              Ik ga akkoord
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+              Google
+            </UIButton>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Inloggen</DialogTitle>
+            </DialogHeader>
+            <SectionDescription>
+              Het gebruik en de overdracht door Angri AI van informatie
+              ontvangen van Google API's aan een andere app voldoet aan het{" "}
+              <a
+                href="https://developers.google.com/terms/api-services-user-data-policy"
+                className="underline underline-offset-4 hover:text-gray-900"
+              >
+                Google API Services User Data
+              </a>{" "}
+              Policy, inclusief de Limited Use-vereisten.
+            </SectionDescription>
+            <div>
+              <Button loading={loadingGoogle} onClick={handleGoogleSignIn}>
+                Ik ga akkoord
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
 
-      <Button
-        size="2xl"
-        loading={loadingMicrosoft}
-        onClick={handleMicrosoftSignIn}
-      >
-        <span className="flex items-center justify-center">
+        <UIButton
+          variant="outline"
+          className="w-full"
+          loading={loadingMicrosoft}
+          onClick={handleMicrosoftSignIn}
+        >
           <Image
             src="/images/microsoft.svg"
-            alt=""
-            width={24}
-            height={24}
+            alt="Microsoft"
+            width={16}
+            height={16}
+            className="mr-2"
             unoptimized
           />
-          <span className="ml-2">Inloggen met Microsoft</span>
-        </span>
-      </Button>
+          Microsoft
+        </UIButton>
+      </div>
 
       <UIButton
         variant="ghost"
         size="lg"
-        className="w-full hover:scale-105 transition-transform"
+        className="w-full hover:scale-105 transition-transform mt-2"
         asChild
       >
         <Link href="/login/sso">Inloggen met SSO</Link>
