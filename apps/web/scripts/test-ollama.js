@@ -2,7 +2,7 @@
 
 // Usage: node apps/web/scripts/test-ollama.js [url] [model]
 // Default URL: http://localhost:11434/api
-// Default Model: llama3
+// Default Model: llama3.2:3b
 
 const url = process.argv[2] || "http://65.108.60.66:11434/api";
 const model = process.argv[3] || "llama3.2:3b";
