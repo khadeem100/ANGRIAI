@@ -743,7 +743,21 @@ export class ImapProvider implements EmailProvider {
   }
 
   async getOrCreateOutlookFolderIdByName(folderName: string): Promise<string> {
-    return folderName;
+    const client = await this.getImapClient();
+    await client.connect();
+    try {
+      const list = await client.list();
+      const existing = list.find((b) => b.name === folderName);
+      if (existing) return existing.path;
+
+      await client.mailboxCreate(folderName);
+      return folderName;
+    } catch (error) {
+      this.logger.error("Error creating folder", { error, folderName });
+      return folderName;
+    } finally {
+      await client.logout();
+    }
   }
 
   async getSignatures(): Promise<EmailSignature[]> {
