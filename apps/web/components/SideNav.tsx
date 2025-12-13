@@ -78,9 +78,9 @@ export const useNavigation = () => {
   const navItems: NavItem[] = useMemo(
     () => [
       {
-        name: "Assistent",
-        href: prefixPath(currentEmailAccountId, "/automation"),
-        icon: SparklesIcon,
+        name: "Workforce",
+        href: prefixPath(currentEmailAccountId, "/workforce"),
+        icon: Users2Icon,
       },
       {
         name: "App Store",
