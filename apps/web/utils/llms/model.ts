@@ -6,7 +6,6 @@ import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { createGroq } from "@ai-sdk/groq";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { createGateway } from "@ai-sdk/gateway";
-import { createOllama } from "ollama-ai-provider";
 import { env } from "@/env";
 import { Provider } from "@/utils/llms/config";
 import type { UserAIFields } from "@/utils/llms/types";
@@ -198,10 +197,16 @@ function selectModel(
     case Provider.OLLAMA: {
       const modelName = aiModel || env.NEXT_PUBLIC_OLLAMA_MODEL;
       if (!modelName) throw new Error("Ollama model is not set");
+
+      const ollama = createOpenAI({
+        baseURL: `${env.OLLAMA_BASE_URL}/v1`,
+        apiKey: "ollama",
+      });
+
       return {
         provider: Provider.OLLAMA!,
         modelName,
-        model: createOllama({ baseURL: env.OLLAMA_BASE_URL })(modelName) as any,
+        model: ollama(modelName),
         backupModel: null,
         fallbacks: [],
       };
