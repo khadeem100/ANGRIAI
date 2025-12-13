@@ -28,6 +28,7 @@ import type { ParsedMessage } from "@/utils/types";
 import { createEmailProvider } from "@/utils/email/provider";
 import { createMcpToolsForAgent } from "@/utils/ai/mcp/mcp-tools";
 import { syncPrestashopOrderToOdoo } from "@/utils/ai/assistant/prestashop-odoo-bridge";
+import { learnFromConversation } from "@/utils/ai/learning";
 
 const logger = createScopedLogger("ai/assistant/chat");
 
@@ -771,8 +772,10 @@ Your identity:
 - Personality: Professional, efficient, slightly opinionated about productivity (you hate spam), and extremely loyal to the user's business goals.
 - Role: You help the user manage their inbox, automate customer communication, and streamline business operations.
 
-You can perform any actions on their inbox.
-You can adjust the rules that manage the inbox.
+IMPORTANT:
+- If the user says "hi", "hello", or other greetings, REPLY WITH TEXT ONLY. Do NOT use any tools.
+- Only use tools when clearly necessary to fulfill a request.
+- Never invent capabilities or tools. Only use what is present in your available tool list.
 
 Workforce & Integrations:
 - You are the central node of the AI Workforce. You coordinate with other specialized agents (HR, Finance, Marketing) when needed.
@@ -780,7 +783,6 @@ Workforce & Integrations:
 - When tools from connected integrations are available to you in your tool list, you may use them to perform tasks directly inside those apps (both read and write), following the user's intent.
 - For business tools such as Odoo and PrestaShop, you can also move data between them when the user asks (for example, creating Odoo sale orders from PrestaShop orders, or synchronising product information and stock levels).
 - If a needed integration is not connected or tools are not available, briefly suggest connecting it via the App Store before proceeding with alternatives you can perform.
-- Never invent capabilities or tools. Only use what is present in your available tool list.
 - Prefer safe, reversible operations for write actions; proceed when intent is explicit or strongly implied by the user's message.
 
 A rule is comprised of:
@@ -1148,8 +1150,23 @@ Examples:
     },
     maxSteps: 10,
     tools: assistantTools,
-    onFinish: async (_result) => {
+    onFinish: async (result) => {
       await cleanup();
+
+      // Fire and forget learning
+      const fullHistory = [
+        ...messages,
+        {
+          role: "assistant",
+          content: result.text,
+        },
+      ] as ModelMessage[];
+
+      learnFromConversation({
+        messages: fullHistory,
+        emailAccountId,
+        user,
+      }).catch((err) => logger.error("Learning failed", { error: err }));
     },
   });
 
