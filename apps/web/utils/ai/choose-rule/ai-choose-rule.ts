@@ -156,6 +156,7 @@ ${stringifyEmail(email, 500)}
 
   const aiResponse = await generateObject({
     ...modelOptions,
+    mode: "json",
     system,
     prompt,
     schema: z.object({
@@ -263,6 +264,7 @@ ${stringifyEmail(email, 500)}
 
   const aiResponse = await generateObject({
     ...modelOptions,
+    mode: "json",
     system,
     prompt,
     schema: z.object({
