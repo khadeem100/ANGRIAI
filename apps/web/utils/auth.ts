@@ -331,6 +331,10 @@ async function getProfileData(providerId: string, accessToken: string) {
 }
 
 async function handleLinkAccount(account: Account) {
+  if (account.providerId === "credential") {
+    return;
+  }
+
   let primaryEmail: string | null | undefined;
   let primaryName: string | null | undefined;
   let primaryPhotoUrl: string | null | undefined;
