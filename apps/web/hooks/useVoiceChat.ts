@@ -124,15 +124,10 @@ export function useVoiceChat() {
         if (transcribedText && transcribedText.trim()) {
           setTranscript(transcribedText);
 
-          // Send message directly using the same structure as ChatProvider
+          // Send message directly
           chat.sendMessage({
             role: "user",
-            parts: [
-              {
-                type: "text",
-                text: transcribedText,
-              },
-            ],
+            parts: [{ type: "text", text: transcribedText }],
           });
         } else {
           toast.error("I didn't catch that. Please try again.");
