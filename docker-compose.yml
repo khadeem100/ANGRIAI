@@ -91,6 +91,7 @@ services:
       - inbox-zero-network
     environment:
       NEXT_PUBLIC_BASE_URL: https://angri.nl
+      NEXT_PUBLIC_ROOT_DOMAIN: angri.nl
     deploy:
       resources:
         limits:

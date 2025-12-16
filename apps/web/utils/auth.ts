@@ -73,6 +73,12 @@ export const betterAuthConfig = betterAuth({
     },
     expiresIn: 60 * 60 * 24 * 30, // 30 days
     updateAge: 60 * 60 * 24 * 3, // 1 day (every 1 day the session expiration is updated)
+    cookie: {
+      domain:
+        process.env.NODE_ENV === "production"
+          ? `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN || "angri.nl"}`
+          : undefined,
+    },
   },
   account: {
     modelName: "Account",
