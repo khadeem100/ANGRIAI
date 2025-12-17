@@ -359,6 +359,8 @@ export function createGenerateObject({
       );
       throw lastError;
     }
+
+    throw new Error("Unexpected error: No models available in execution plan");
   };
 }
 
