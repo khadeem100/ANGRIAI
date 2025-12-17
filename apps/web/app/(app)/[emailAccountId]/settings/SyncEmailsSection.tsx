@@ -34,6 +34,9 @@ export function SyncEmailsSection() {
     try {
       const response = await fetch("/api/user/sync-emails", {
         method: "POST",
+        headers: {
+          "x-email-account-id": emailAccountId,
+        },
       });
 
       const data = await response.json();
