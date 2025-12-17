@@ -3,7 +3,6 @@ import { withEmailAccount } from "@/utils/middleware";
 import { createEmailProvider } from "@/utils/email/provider";
 import { ImapProvider } from "@/utils/email/imap";
 import { processHistoryItem } from "@/utils/webhook/process-history-item";
-import { validateWebhookAccount } from "@/utils/webhook/validate-webhook-account";
 import prisma from "@/utils/prisma";
 import { captureException } from "@/utils/error";
 import { createScopedLogger } from "@/utils/logger";
@@ -52,20 +51,11 @@ export const POST = withEmailAccount("user/sync-emails", async (request) => {
       );
     }
 
-    // Validate account state
-    const validation = await validateWebhookAccount(emailAccount, logger);
-    if (!validation.success) {
-      return NextResponse.json(
-        { error: "Account validation failed", details: validation.response },
-        { status: 400 },
-      );
-    }
-
-    const {
-      emailAccount: validatedEmailAccount,
-      hasAutomationRules,
-      hasAiAccess,
-    } = validation.data;
+    // For manual sync, we don't need all the webhook validation checks
+    // Just check if we have the basic requirements
+    const premium = emailAccount.user.premium;
+    const hasAutomationRules = emailAccount.rules.length > 0;
+    const hasAiAccess = premium ? true : false; // Simplified for manual sync
 
     const provider = await createEmailProvider({
       emailAccountId,
@@ -121,10 +111,10 @@ export const POST = withEmailAccount("user/sync-emails", async (request) => {
           },
           {
             provider,
-            emailAccount: validatedEmailAccount,
+            emailAccount,
             hasAutomationRules,
             hasAiAccess,
-            rules: validatedEmailAccount.rules,
+            rules: emailAccount.rules,
             logger,
           },
         );
