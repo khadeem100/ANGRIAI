@@ -41,6 +41,12 @@ const zodSystemRule = z.enum([
   SystemType.CALENDAR,
   SystemType.RECEIPT,
   SystemType.NOTIFICATION,
+  SystemType.HR_CANDIDATE,
+  SystemType.HR_ONBOARDING,
+  SystemType.HR_LEAVE,
+  SystemType.HR_PAYROLL,
+  SystemType.HR_PERFORMANCE,
+  SystemType.HR_GENERAL,
 ]);
 
 const zodAiCondition = z.object({

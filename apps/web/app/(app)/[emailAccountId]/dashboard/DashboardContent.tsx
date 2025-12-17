@@ -42,7 +42,7 @@ export function DashboardContent() {
     },
   );
 
-  if (isLoading) return <LoadingContent />;
+  if (isLoading) return <LoadingContent loading={true} />;
   if (error)
     return (
       <div className="text-destructive">Failed to load dashboard data</div>
