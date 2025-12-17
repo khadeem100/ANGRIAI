@@ -27,8 +27,20 @@ async function getTodos({ emailAccountId }: { emailAccountId: string }) {
   return todos;
 }
 
-export const GET = withAuth("user/todos", async (request, emailAccountId) => {
-  const todos = await getTodos({ emailAccountId });
+export const GET = withAuth("user/todos", async (request) => {
+  const { userId } = request.auth;
+  
+  // Get all email accounts for the user and their todos
+  const emailAccounts = await prisma.emailAccount.findMany({
+    where: { userId },
+    select: { id: true },
+  });
+  
+  const allTodos = await Promise.all(
+    emailAccounts.map(account => getTodos({ emailAccountId: account.id }))
+  );
+  
+  const todos = allTodos.flat();
 
   return NextResponse.json(todos);
 });
