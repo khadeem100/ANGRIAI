@@ -6,12 +6,14 @@ import { processHistoryItem } from "@/utils/webhook/process-history-item";
 import { validateWebhookAccount } from "@/utils/webhook/validate-webhook-account";
 import prisma from "@/utils/prisma";
 import { captureException } from "@/utils/error";
+import { createScopedLogger } from "@/utils/logger";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60; // 1 minute
 
 export const POST = withEmailAccount("user/sync-emails", async (request) => {
-  const { emailAccountId, logger } = request.auth;
+  const { emailAccountId } = request.auth;
+  const logger = createScopedLogger("user/sync-emails");
 
   try {
     const emailAccount = await prisma.emailAccount.findUnique({

@@ -54,7 +54,7 @@ export const GET = withEmailAccount("admin/training-data", async (request) => {
           conversation.messages[1] = {
             ...conversation.messages[1],
             tool_calls: item.toolCalls,
-          };
+          } as any;
         }
 
         return JSON.stringify(conversation);

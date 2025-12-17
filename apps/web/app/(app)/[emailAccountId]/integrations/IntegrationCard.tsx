@@ -129,9 +129,8 @@ export function IntegrationCard({
 
     setIsDisconnecting(true);
     try {
-      const result = await disconnectMcpConnectionAction({
+      const result = await disconnectMcpConnectionAction(emailAccountId, {
         connectionId: conn.id,
-        emailAccountId,
       });
 
       if (result?.serverError) {
@@ -159,10 +158,9 @@ export function IntegrationCard({
     if (!conn?.id) return;
 
     try {
-      const result = await toggleMcpConnectionAction({
+      const result = await toggleMcpConnectionAction(emailAccountId, {
         connectionId: conn.id,
         isActive: enabled,
-        emailAccountId,
       });
 
       if (result?.serverError) {

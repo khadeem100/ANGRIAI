@@ -81,7 +81,7 @@ async function getDigestSettings({
   };
 
   // Map system types to digest settings
-  const systemTypeToKey: Record<SystemType, keyof typeof digestSettings> = {
+  const systemTypeToKey: Partial<Record<SystemType, keyof typeof digestSettings>> = {
     [SystemType.TO_REPLY]: "toReply",
     [SystemType.AWAITING_REPLY]: "awaitingReply",
     [SystemType.FYI]: "fyi",
@@ -92,6 +92,7 @@ async function getDigestSettings({
     [SystemType.RECEIPT]: "receipt",
     [SystemType.NOTIFICATION]: "notification",
     [SystemType.COLD_EMAIL]: "coldEmail",
+    // HR types don't have digest settings yet
   };
 
   // Verify all supported system types are mapped
@@ -106,7 +107,9 @@ async function getDigestSettings({
   emailAccount.rules.forEach((rule) => {
     if (rule.systemType && rule.systemType in systemTypeToKey) {
       const key = systemTypeToKey[rule.systemType];
-      digestSettings[key] = rule.actions.length > 0;
+      if (key) {
+        digestSettings[key] = rule.actions.length > 0;
+      }
     }
   });
 

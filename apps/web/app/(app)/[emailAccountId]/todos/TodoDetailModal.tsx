@@ -28,6 +28,7 @@ import {
   updateTodoStatusAction,
   updateSubtaskStatusAction,
 } from "@/utils/actions/todos";
+import { useAccount } from "@/providers/EmailAccountProvider";
 
 const priorityConfig = {
   LOW: {
@@ -59,6 +60,7 @@ export function TodoDetailModal({
   onClose: () => void;
   onUpdate: () => void;
 }) {
+  const { emailAccountId } = useAccount();
   const [copied, setCopied] = useState(false);
   const [updatingStatus, setUpdatingStatus] = useState(false);
 
@@ -74,7 +76,7 @@ export function TodoDetailModal({
   ) => {
     setUpdatingStatus(true);
     try {
-      await updateTodoStatusAction({ todoId: todo.id, status: newStatus });
+      await updateTodoStatusAction(emailAccountId, { todoId: todo.id, status: newStatus });
       toast.success("Status updated");
       onUpdate();
     } catch (error) {
@@ -90,7 +92,7 @@ export function TodoDetailModal({
   ) => {
     const newStatus = currentStatus === "COMPLETED" ? "PENDING" : "COMPLETED";
     try {
-      await updateSubtaskStatusAction({ subtaskId, status: newStatus });
+      await updateSubtaskStatusAction(emailAccountId, { subtaskId, status: newStatus });
       onUpdate();
     } catch (error) {
       toast.error("Failed to update subtask");

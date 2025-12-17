@@ -24,9 +24,7 @@ export function AppStore() {
   const integrations = data?.integrations || [];
 
   const uiError = error
-    ? "info" in (error as Record<string, unknown>)
-      ? { info: (error as Record<string, unknown>).info as string }
-      : { error: (error as Error).message }
+    ? { error: error instanceof Error ? error.message : "An error occurred" }
     : undefined;
 
   // Get description from displayName or generate one

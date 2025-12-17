@@ -42,7 +42,7 @@ export function DashboardContent() {
     },
   );
 
-  if (isLoading) return <LoadingContent loading={true} />;
+  if (isLoading) return <div className="flex items-center justify-center p-8"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" /></div>;
   if (error)
     return (
       <div className="text-destructive">Failed to load dashboard data</div>

@@ -62,7 +62,7 @@ export const POST = withAuth("integrations/purchase", async (request) => {
       select: {
         email: true,
         premium: {
-          select: { stripeCustomerId: true },
+          select: { id: true, stripeCustomerId: true },
         },
       },
     });

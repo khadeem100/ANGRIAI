@@ -61,7 +61,7 @@ export default async function CustomerServiceDashboard({
           />
         </div>
 
-        <Tabs defaultValue={tab || "rules"} value={tab || "rules"}>
+        <Tabs defaultValue={tab || "rules"}>
           <TabsContent value="rules" className="mb-10">
             <RulesTab />
           </TabsContent>

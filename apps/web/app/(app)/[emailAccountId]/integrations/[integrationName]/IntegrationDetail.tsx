@@ -65,7 +65,7 @@ export function IntegrationDetail({ params }: IntegrationDetailProps) {
   );
 
   if (isLoading) {
-    return <LoadingContent loading={true} />;
+    return <div className="flex items-center justify-center p-8"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" /></div>;
   }
 
   if (!integration) {
@@ -137,9 +137,8 @@ export function IntegrationDetail({ params }: IntegrationDetailProps) {
 
     setIsDisconnecting(true);
     try {
-      const result = await disconnectMcpConnectionAction({
+      const result = await disconnectMcpConnectionAction(emailAccountId, {
         connectionId: conn.id,
-        emailAccountId,
       });
 
       if (result?.serverError) {
@@ -167,10 +166,9 @@ export function IntegrationDetail({ params }: IntegrationDetailProps) {
     if (!conn?.id) return;
 
     try {
-      const result = await toggleMcpConnectionAction({
+      const result = await toggleMcpConnectionAction(emailAccountId, {
         connectionId: conn.id,
         isActive: enabled,
-        emailAccountId,
       });
 
       if (result?.serverError) {
