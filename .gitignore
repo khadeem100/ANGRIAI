@@ -79,3 +79,5 @@ logs
 
 coveragehooks.json
 README.md
+apps/web/.env.backup
+apps/web/.env.local.backup

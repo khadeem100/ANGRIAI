@@ -29,6 +29,7 @@ import { createEmailProvider } from "@/utils/email/provider";
 import { createMcpToolsForAgent } from "@/utils/ai/mcp/mcp-tools";
 import { syncPrestashopOrderToOdoo } from "@/utils/ai/assistant/prestashop-odoo-bridge";
 import { learnFromConversation } from "@/utils/ai/learning";
+import { collectTrainingData } from "@/utils/ai/learning/collect-training-data";
 
 const logger = createScopedLogger("ai/assistant/chat");
 
@@ -1154,6 +1155,29 @@ Examples:
     tools: assistantTools,
     onFinish: async (result) => {
       await cleanup();
+
+      // Collect training data for fine-tuning
+      const userMessage = messages[messages.length - 1];
+      if (userMessage && userMessage.role === "user") {
+        collectTrainingData({
+          emailAccountId,
+          conversationType: "chat",
+          userMessage:
+            typeof userMessage.content === "string"
+              ? userMessage.content
+              : JSON.stringify(userMessage.content),
+          assistantResponse: result.text,
+          toolCalls: result.toolCalls,
+          context: context
+            ? {
+                type: context.type,
+                messageSubject: context.message.headers.subject,
+              }
+            : undefined,
+        }).catch((err) =>
+          logger.error("Training data collection failed", { error: err }),
+        );
+      }
 
       // Fire and forget learning
       const fullHistory = [

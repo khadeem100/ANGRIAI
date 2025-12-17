@@ -88,6 +88,10 @@ model User {
   aiProvider    String?
   aiModel       String?
   aiApiKey      String?
+
+  // AI Learning
+  aiLearningConsent Boolean? @default(false) // User consent for Jenn to learn from chats
+  aiLearningConsentAt DateTime? // When consent was given
   webhookSecret String?
 
   // referral system
@@ -107,6 +111,9 @@ model User {
   // Referral relationships
   referralsMade    Referral[] @relation("ReferrerUser")
   referralReceived Referral?  @relation("ReferredUser")
+
+  // Integration purchases
+  integrationPurchases IntegrationPurchase[]
 }
 
 // Migrating over to the new settings model. Currently most settings are in the User model, but will be moved to this model in the future.
@@ -143,6 +150,10 @@ model EmailAccount {
   rulesPrompt               String? // @deprecated
   autoCategorizeSenders     Boolean           @default(false)
   multiRuleSelectionEnabled Boolean           @default(false)
+  
+  // AI Learning
+  aiLearningConsent   Boolean?  @default(false) // User consent for Jenn to learn from chats
+  aiLearningConsentAt DateTime? // When consent was given
 
   digestSchedule Schedule?
 
@@ -174,6 +185,8 @@ model EmailAccount {
   calendarConnections CalendarConnection[]
   mcpConnections      McpConnection[]
   ConnectionConfig    ConnectionConfig?
+  aiTrainingData      AiTrainingData[]
+  todoItems           TodoItem[]
 
   @@index([userId])
   @@index([lastSummaryEmailAt])
@@ -855,9 +868,10 @@ model Chat {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  messages       ChatMessage[]
   emailAccountId String
-  emailAccount   EmailAccount  @relation(fields: [emailAccountId], references: [id], onDelete: Cascade)
+  emailAccount   EmailAccount     @relation(fields: [emailAccountId], references: [id], onDelete: Cascade)
+  messages       ChatMessage[]
+  aiTrainingData AiTrainingData[]
 
   @@index([emailAccountId])
 }
@@ -1005,7 +1019,33 @@ model McpConnection {
   tools          McpTool[]
   metadata       Json? // For example, Odoo URL and DB name
 
+  // Purchase tracking
+  purchaseId String?
+  purchase   IntegrationPurchase? @relation(fields: [purchaseId], references: [id])
+
   @@unique([emailAccountId, integrationId])
+}
+
+model IntegrationPurchase {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId         String
+  user           User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  integrationName String // Name of the integration purchased
+
+  // Stripe payment details
+  stripePaymentIntentId String  @unique
+  stripeInvoiceId       String?
+  amount                Int // Amount in cents
+  currency              String  @default("usd")
+  status                String // payment_intent status: succeeded, processing, requires_payment_method, etc.
+
+  connections McpConnection[]
+
+  @@index([userId])
+  @@index([integrationName])
 }
 
 model McpTool {
@@ -1139,6 +1179,13 @@ enum SystemType {
   CALENDAR
   RECEIPT
   NOTIFICATION
+  // HR Manager
+  HR_CANDIDATE
+  HR_ONBOARDING
+  HR_LEAVE
+  HR_PAYROLL
+  HR_PERFORMANCE
+  HR_GENERAL
 }
 
 enum ReferralStatus {
@@ -1165,4 +1212,106 @@ enum SchedulingStatus {
   PENDING
   SCHEDULED
   FAILED
+}
+
+// AI Training Data - stores conversations for fine-tuning
+model AiTrainingData {
+  id                 String       @id @default(cuid())
+  createdAt          DateTime     @default(now())
+  emailAccountId     String
+  emailAccount       EmailAccount @relation(fields: [emailAccountId], references: [id], onDelete: Cascade)
+  chatId             String?
+  chat               Chat?        @relation(fields: [chatId], references: [id], onDelete: SetNull)
+  conversationType   String // "chat", "rule_execution", "email_processing"
+  userMessage        String       @db.Text
+  assistantResponse  String       @db.Text
+  toolCalls          Json? // Record of tools used
+  context            Json? // Additional context (email content, rule details, etc.)
+  feedback           String? // User feedback on the response
+  quality            String? // "good", "bad", "neutral"
+
+  @@index([emailAccountId])
+  @@index([chatId])
+  @@index([createdAt])
+}
+
+// AI-Generated To-Do Items from emails
+model TodoItem {
+  id                String       @id @default(cuid())
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  
+  emailAccountId    String
+  emailAccount      EmailAccount @relation(fields: [emailAccountId], references: [id], onDelete: Cascade)
+  
+  // Email reference
+  threadId          String?
+  messageId         String?
+  gmailMessageId    String?
+  
+  // To-Do details
+  title             String       // Short title of the task
+  description       String       @db.Text // Detailed description
+  priority          TodoPriority @default(MEDIUM)
+  status            TodoStatus   @default(PENDING)
+  dueDate           DateTime?    // Extracted or inferred due date
+  
+  // AI-generated content
+  aiSummary         String       @db.Text // AI's understanding of the task
+  emailContext      String       @db.Text // Copy of relevant email content
+  highlightedText   String?      @db.Text // Highlighted portions that triggered the to-do
+  extractedEntities Json?        // Names, dates, amounts, etc. extracted by AI
+  
+  // Subtasks
+  subtasks          TodoSubtask[]
+  
+  // AI actions already taken
+  aiActionsCompleted Json?       // List of actions AI already performed
+  relatedRules      Json?        // Rules that were triggered for this email
+  
+  // User interaction
+  completedAt       DateTime?
+  completedBy       String?      // User who completed it
+  notes             String?      @db.Text // User's notes
+  
+  @@index([emailAccountId])
+  @@index([threadId])
+  @@index([status])
+  @@index([priority])
+  @@index([dueDate])
+  @@index([createdAt])
+}
+
+model TodoSubtask {
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  todoItemId  String
+  todoItem    TodoItem  @relation(fields: [todoItemId], references: [id], onDelete: Cascade)
+  
+  title       String
+  description String?   @db.Text
+  status      TodoStatus @default(PENDING)
+  order       Int       @default(0)
+  
+  completedAt DateTime?
+  completedBy String?
+  
+  @@index([todoItemId])
+  @@index([status])
+}
+
+enum TodoPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum TodoStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
 }

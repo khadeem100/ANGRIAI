@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%; /* white */
+    --background: 0 0% 98%; /* light gray background */
     --foreground: 222.2 47.4% 11.2%; /* slate-900 */
 
     --muted: 210 40% 96.1%; /* slate-100 */
@@ -19,36 +19,36 @@
     --border: 214.3 31.8% 91.4%; /* slate-200 */
     --input: 214.3 31.8% 91.4%; /* slate-200 */
 
-    --primary: 222.2 47.4% 11.2%; /* slate-900 */
-    --primary-foreground: 210 40% 98%; /* slate-50 */
+    --primary: 14 100% 57%; /* orange-500 #FF5722 */
+    --primary-foreground: 0 0% 100%; /* white */
 
     --secondary: 210 40% 96.1%; /* slate-100 */
     --secondary-foreground: 222.2 47.4% 11.2%; /* slate-900 */
 
-    --accent: 210 40% 96.1%; /* slate-100 */
-    --accent-foreground: 222.2 47.4% 11.2%; /* slate-900 */
+    --accent: 14 100% 57%; /* orange-500 */
+    --accent-foreground: 0 0% 100%; /* white */
 
     --destructive: 0 100% 50%;
     --destructive-foreground: 210 40% 98%;
 
-    --ring: 215 20.2% 65.1%; /* slate-400 */
+    --ring: 14 100% 57%; /* orange-500 */
 
     --radius: 0.5rem;
 
-    --sidebar-background: 0 0% 98%;
+    --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-primary: 14 100% 57%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 14 100% 97%;
+    --sidebar-accent-foreground: 14 100% 57%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 14 100% 57%;
 
-    --chart-1: oklch(0.75 0.15 250);
-    --chart-2: oklch(0.65 0.18 250);
-    --chart-3: oklch(0.55 0.2 250);
-    --chart-4: oklch(0.45 0.22 250);
-    --chart-5: oklch(0.35 0.18 250);
+    --chart-1: 14 100% 57%;
+    --chart-2: 14 100% 67%;
+    --chart-3: 14 100% 77%;
+    --chart-4: 14 100% 87%;
+    --chart-5: 14 100% 47%;
   }
 
   .dark {

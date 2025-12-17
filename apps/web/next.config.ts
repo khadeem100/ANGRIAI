@@ -20,7 +20,6 @@ const nextConfig: NextConfig = {
     "@sentry/node",
     "imapflow",
     "mailparser",
-    "nodemailer",
     "pino",
     "thread-stream",
   ],
@@ -77,6 +76,35 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "images.getinboxzero.com",
+      },
+      // Integration logos
+      {
+        protocol: "https",
+        hostname: "upload.wikimedia.org",
+      },
+      {
+        protocol: "https",
+        hostname: "images.ctfassets.net",
+      },
+      {
+        protocol: "https",
+        hostname: "dapulse-res.cloudinary.com",
+      },
+      {
+        protocol: "https",
+        hostname: "www.prestashop.com",
+      },
+      {
+        protocol: "https",
+        hostname: "plugin.intuitcdn.net",
+      },
+      {
+        protocol: "https",
+        hostname: "www.odoo.com",
+      },
+      {
+        protocol: "https",
+        hostname: "www.hubspot.com",
       },
     ],
   },

@@ -107,6 +107,60 @@ const ruleConfig: Record<
     tooltipText:
       "Unsolicited sales pitches and cold emails. We'll never block someone that's emailed you before",
   },
+  [SystemType.HR_CANDIDATE]: {
+    name: "HR Candidate",
+    instructions:
+      "Job applications, resumes, interview scheduling, and candidate communications",
+    label: "HR Candidate",
+    runOnThreads: true,
+    categoryAction: "label",
+    tooltipText: "Applications and candidate correspondence",
+  },
+  [SystemType.HR_ONBOARDING]: {
+    name: "HR Onboarding",
+    instructions:
+      "New hire paperwork, orientation, provisioning, and welcome emails",
+    label: "HR Onboarding",
+    runOnThreads: true,
+    categoryAction: "label",
+    tooltipText: "New employee onboarding process",
+  },
+  [SystemType.HR_LEAVE]: {
+    name: "HR Leave",
+    instructions:
+      "Time off requests, sick leave, vacation approvals, and attendance",
+    label: "HR Leave",
+    runOnThreads: true,
+    categoryAction: "label",
+    tooltipText: "Time off and leave management",
+  },
+  [SystemType.HR_PAYROLL]: {
+    name: "HR Payroll",
+    instructions:
+      "Payroll questions, salary slips, expense reimbursements, and tax forms",
+    label: "HR Payroll",
+    runOnThreads: true,
+    categoryAction: "label",
+    tooltipText: "Payroll, taxes, and expenses",
+  },
+  [SystemType.HR_PERFORMANCE]: {
+    name: "HR Performance",
+    instructions:
+      "Performance reviews, feedback, goal setting, and 1-on-1 notes",
+    label: "HR Performance",
+    runOnThreads: true,
+    categoryAction: "label",
+    tooltipText: "Reviews and performance management",
+  },
+  [SystemType.HR_GENERAL]: {
+    name: "HR General",
+    instructions:
+      "General HR inquiries, policy questions, and internal announcements",
+    label: "HR General",
+    runOnThreads: true,
+    categoryAction: "label",
+    tooltipText: "General HR inquiries",
+  },
 };
 
 export function getRuleConfig(systemType: SystemType) {
@@ -143,6 +197,12 @@ export const SYSTEM_RULE_ORDER: SystemType[] = [
   SystemType.CALENDAR,
   SystemType.RECEIPT,
   SystemType.NOTIFICATION,
+  SystemType.HR_CANDIDATE,
+  SystemType.HR_ONBOARDING,
+  SystemType.HR_LEAVE,
+  SystemType.HR_PAYROLL,
+  SystemType.HR_PERFORMANCE,
+  SystemType.HR_GENERAL,
   SystemType.COLD_EMAIL,
 ];
 

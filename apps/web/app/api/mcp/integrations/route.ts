@@ -8,10 +8,11 @@ export type GetIntegrationsResponse = Awaited<ReturnType<typeof getData>>;
 
 export const GET = withEmailAccount("mcp/integrations", async (request) => {
   const emailAccountId = request.auth.emailAccountId;
-  return NextResponse.json(await getData(emailAccountId));
+  const userId = request.auth.userId;
+  return NextResponse.json(await getData(emailAccountId, userId));
 });
 
-async function getData(emailAccountId: string) {
+async function getData(emailAccountId: string, userId: string) {
   // Best-effort: ensure Odoo tools are synced so UI reflects latest toolset
   try {
     const activeOdoo = await prisma.mcpConnection.findFirst({
@@ -51,11 +52,28 @@ async function getData(emailAccountId: string) {
     },
   });
 
+  // Get user's purchases
+  const purchases = await prisma.integrationPurchase.findMany({
+    where: { userId, status: "succeeded" },
+    select: { integrationName: true },
+  });
+
+  const purchasedIntegrations = new Set(
+    purchases.map((p) => p.integrationName),
+  );
+
   const integrations = Object.values(MCP_INTEGRATIONS).map((integration) => ({
     name: integration.name,
     displayName: integration.displayName,
+    logo: integration.logo,
+    description: integration.description,
+    category: integration.category,
+    features: integration.features,
     comingSoon: integration.comingSoon,
     authType: integration.authType,
+    pricing: integration.pricing,
+    isFree: !integration.pricing,
+    isPurchased: purchasedIntegrations.has(integration.name),
     connection: connections.find(
       (connection) => connection.integration.name === integration.name,
     ),

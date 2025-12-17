@@ -66,6 +66,15 @@ const allowedEvents: Stripe.Event.Type[] = [
 async function processEvent(event: Stripe.Event) {
   if (!allowedEvents.includes(event.type)) return;
 
+  // Handle integration purchase checkout completion
+  if (event.type === "checkout.session.completed") {
+    const session = event.data.object as Stripe.Checkout.Session;
+    if (session.metadata?.type === "integration_purchase") {
+      await handleIntegrationPurchase(session);
+      return;
+    }
+  }
+
   // All the events we track have a customerId
   const customerId =
     "customer" in event.data.object ? event.data.object.customer : null;
@@ -124,6 +133,71 @@ async function handleReferralCompletion(
   // Complete the referral
   for (const userId of userIds) {
     await completeReferralAndGrantReward(userId);
+  }
+}
+
+async function handleIntegrationPurchase(session: Stripe.Checkout.Session) {
+  const { userId, integrationName, emailAccountId } = session.metadata || {};
+
+  if (!userId || !integrationName || !emailAccountId) {
+    logger.error("Missing metadata in integration purchase session", {
+      sessionId: session.id,
+      metadata: session.metadata,
+    });
+    return;
+  }
+
+  logger.info("Processing integration purchase", {
+    userId,
+    integrationName,
+    sessionId: session.id,
+  });
+
+  try {
+    // Get payment intent details
+    const paymentIntentId =
+      typeof session.payment_intent === "string"
+        ? session.payment_intent
+        : session.payment_intent?.id;
+
+    if (!paymentIntentId) {
+      logger.error("No payment intent found in session", {
+        sessionId: session.id,
+      });
+      return;
+    }
+
+    // Create purchase record
+    const purchase = await prisma.integrationPurchase.create({
+      data: {
+        userId,
+        integrationName,
+        stripePaymentIntentId: paymentIntentId,
+        stripeInvoiceId:
+          typeof session.invoice === "string"
+            ? session.invoice
+            : session.invoice?.id || null,
+        amount: session.amount_total || 0,
+        currency: session.currency || "usd",
+        status:
+          session.payment_status === "paid"
+            ? "succeeded"
+            : session.payment_status || "processing",
+      },
+    });
+
+    logger.info("Created integration purchase record", {
+      purchaseId: purchase.id,
+      userId,
+      integrationName,
+    });
+  } catch (error) {
+    logger.error("Error processing integration purchase", {
+      error,
+      userId,
+      integrationName,
+      sessionId: session.id,
+    });
   }
 }
 

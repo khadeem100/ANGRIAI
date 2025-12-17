@@ -1,4 +1,3 @@
-
 console.log("Starting script...");
 try {
   const { createOpenAI } = require("@ai-sdk/openai");

@@ -359,9 +359,31 @@ export function createGenerateObject({
       );
       throw lastError;
     }
-
-    throw new Error("Unexpected error: No models available in execution plan");
   };
+}
+
+/**
+ * Sanitize messages for Ollama compatibility
+ * Ollama doesn't support advanced features like item_reference
+ */
+function sanitizeMessagesForOllama(messages: ModelMessage[]): ModelMessage[] {
+  return messages.map((msg) => {
+    // If message has content array, convert to simple text
+    if (Array.isArray(msg.content)) {
+      const textParts = msg.content
+        .filter((part: any) => part.type === "text")
+        .map((part: any) => part.text)
+        .filter(Boolean)
+        .join("\n");
+
+      // Return with string content instead of array
+      return {
+        role: msg.role,
+        content: textParts || "...",
+      } as ModelMessage;
+    }
+    return msg;
+  });
 }
 
 export async function chatCompletionStream({
@@ -386,6 +408,12 @@ export async function chatCompletionStream({
   onStepFinish?: StreamTextOnStepFinishCallback<Record<string, Tool>>;
 }) {
   const modelOptions = getModel(userAi, modelType);
+
+  // Sanitize messages for Ollama if using Ollama provider
+  const sanitizedMessages =
+    modelOptions.provider === "ollama"
+      ? sanitizeMessagesForOllama(messages)
+      : messages;
 
   // Construct execution plan: Primary -> Backup -> Fallbacks
   const executionPlan: {
@@ -435,7 +463,7 @@ export async function chatCompletionStream({
 
       const result = streamText({
         model: plan.model,
-        messages,
+        messages: sanitizedMessages,
         tools,
         stopWhen: maxSteps ? stepCountIs(maxSteps) : undefined,
         providerOptions: modelOptions.providerOptions, // Use original provider options (might need adjustment per model, but usually fine)

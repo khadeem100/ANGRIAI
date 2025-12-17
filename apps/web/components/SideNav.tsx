@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { getEmailTerminology } from "@/utils/terminology";
 import {
   AlertCircleIcon,
@@ -14,17 +15,25 @@ import {
   CalendarIcon,
   ChevronDownIcon,
   ChevronRightIcon,
+  DownloadIcon,
   FileIcon,
+  GraduationCapIcon,
+  HeadphonesIcon,
+  HomeIcon,
   InboxIcon,
   type LucideIcon,
+  MailIcon,
   MailsIcon,
+  MegaphoneIcon,
   MessagesSquareIcon,
   PenIcon,
   PersonStandingIcon,
+  PlugIcon,
   RatioIcon,
   SendIcon,
   SettingsIcon,
   SparklesIcon,
+  StickyNoteIcon,
   TagIcon,
   Users2Icon,
 } from "lucide-react";
@@ -58,6 +67,7 @@ import { ReferralDialog } from "@/components/ReferralDialog";
 import { isGoogleProvider } from "@/utils/email/provider-types";
 import { NavUser } from "@/components/NavUser";
 import { PremiumCard } from "@/components/PremiumCard";
+import { useInstalledIntegrations } from "@/hooks/useInstalledIntegrations";
 
 type NavItem = {
   name: string;
@@ -78,43 +88,54 @@ export const useNavigation = () => {
   const navItems: NavItem[] = useMemo(
     () => [
       {
+        name: "Dashboard",
+        href: prefixPath(currentEmailAccountId, "/dashboard"),
+        icon: HomeIcon,
+      },
+      {
+        name: "Email Assistant",
+        href: prefixPath(currentEmailAccountId, "/assistant"),
+        icon: SparklesIcon,
+      },
+      {
+        name: "Calendar",
+        href: prefixPath(currentEmailAccountId, "/calendars"),
+        icon: CalendarIcon,
+      },
+      {
+        name: "AI Automation",
+        href: prefixPath(currentEmailAccountId, "/automation"),
+        icon: MessagesSquareIcon,
+      },
+      {
+        name: "Mail Analytics",
+        href: prefixPath(currentEmailAccountId, "/stats"),
+        icon: BarChartBigIcon,
+      },
+      {
+        name: "App Store",
+        href: prefixPath(currentEmailAccountId, "/integrations"),
+        icon: BookIcon,
+      },
+      {
+        name: "To-Do",
+        href: prefixPath(currentEmailAccountId, "/todos"),
+        icon: StickyNoteIcon,
+      },
+      {
+        name: "Downloads",
+        href: prefixPath(currentEmailAccountId, "/downloads"),
+        icon: DownloadIcon,
+      },
+      {
         name: "Workforce",
         href: prefixPath(currentEmailAccountId, "/workforce"),
         icon: Users2Icon,
       },
       {
-        name: "App Store",
-        href: prefixPath(currentEmailAccountId, "/integrations"),
-        icon: MessagesSquareIcon,
-      },
-      {
-        name: "AI Ops",
-        href: "/product/ai-ops",
-        icon: SparklesIcon,
-      },
-      {
-        name: "Bulk Uitschrijven",
-        href: prefixPath(currentEmailAccountId, "/bulk-unsubscribe"),
-        icon: MailsIcon,
-      },
-      ...(isGoogleProvider(provider)
-        ? [
-            {
-              name: "Opschonen",
-              href: prefixPath(currentEmailAccountId, "/clean"),
-              icon: BrushIcon,
-            },
-          ]
-        : []),
-      {
-        name: "Analytics",
-        href: prefixPath(currentEmailAccountId, "/stats"),
-        icon: BarChartBigIcon,
-      },
-      {
-        name: "Agenda's",
-        href: prefixPath(currentEmailAccountId, "/calendars"),
-        icon: CalendarIcon,
+        name: "Courses",
+        href: prefixPath(currentEmailAccountId, "/courses"),
+        icon: GraduationCapIcon,
       },
     ],
     [currentEmailAccountId, provider],
@@ -192,6 +213,8 @@ export function SideNav({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const currentEmailAccountId = emailAccount?.id || emailAccountId;
   const path = usePathname();
   const showMailNav = path.includes("/mail") || path.includes("/compose");
+  const { installedIntegrations, isLoading: integrationsLoading } =
+    useInstalledIntegrations();
 
   const visibleBottomLinks = useMemo(
     () =>
@@ -234,10 +257,58 @@ export function SideNav({ ...props }: React.ComponentProps<typeof Sidebar>) {
           {showMailNav ? (
             <MailNav path={path} />
           ) : (
-            <SidebarGroup>
-              <SidebarGroupLabel>Platform</SidebarGroupLabel>
-              <SideNavMenu items={navigation.navItems} activeHref={path} />
-            </SidebarGroup>
+            <>
+              <SidebarGroup>
+                <SidebarGroupLabel>Platform</SidebarGroupLabel>
+                <SideNavMenu items={navigation.navItems} activeHref={path} />
+              </SidebarGroup>
+
+              {/* Installed Integrations Section */}
+              {installedIntegrations.length > 0 && (
+                <SidebarGroup>
+                  <SidebarGroupLabel>Integrations</SidebarGroupLabel>
+                  <SidebarMenu>
+                    {installedIntegrations.map((integration) => (
+                      <SidebarMenuItem key={integration.name}>
+                        <SidebarMenuButton
+                          asChild
+                          isActive={path.includes(
+                            `/integrations/${integration.name}`,
+                          )}
+                        >
+                          <Link
+                            href={prefixPath(
+                              currentEmailAccountId,
+                              `/integrations/${integration.name}`,
+                            )}
+                          >
+                            {integration.logo ? (
+                              <div className="size-4 flex items-center justify-center">
+                                <Image
+                                  src={integration.logo}
+                                  alt={integration.displayName}
+                                  width={16}
+                                  height={16}
+                                  className="object-contain"
+                                />
+                              </div>
+                            ) : (
+                              <PlugIcon className="size-4" />
+                            )}
+                            <span className="truncate">
+                              {integration.displayName}
+                            </span>
+                            {integration.isActive && (
+                              <span className="ml-auto size-2 rounded-full bg-green-500" />
+                            )}
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    ))}
+                  </SidebarMenu>
+                </SidebarGroup>
+              )}
+            </>
           )}
         </SidebarGroupContent>
       </SidebarContent>
