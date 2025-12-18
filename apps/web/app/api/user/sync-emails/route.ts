@@ -6,6 +6,12 @@ import { processHistoryItem } from "@/utils/webhook/process-history-item";
 import prisma from "@/utils/prisma";
 import { captureException } from "@/utils/error";
 import { createScopedLogger } from "@/utils/logger";
+import {
+  extractEmailAddress,
+  extractNameFromEmail,
+  extractDomainFromEmail,
+} from "@/utils/email";
+import { findUnsubscribeLink } from "@/utils/parse/parseHtml.client";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60; // 1 minute
@@ -96,6 +102,7 @@ export const POST = withEmailAccount("user/sync-emails", async (request) => {
 
     let maxUid = lastUid;
     const processedMessages = [];
+    const emailsToSave = [];
 
     for (const message of messages) {
       const uid = Number.parseInt(message.id, 10);
@@ -104,20 +111,51 @@ export const POST = withEmailAccount("user/sync-emails", async (request) => {
       }
 
       try {
-        await processHistoryItem(
-          {
-            messageId: message.id,
-            preFetchedMessage: message,
-          },
-          {
-            provider,
-            emailAccount,
-            hasAutomationRules,
-            hasAiAccess,
-            rules: emailAccount.rules,
-            logger,
-          },
-        );
+        // Save email to database for analytics
+        const fromEmail = extractEmailAddress(message.headers.from) || message.headers.from;
+        const unsubscribeLink =
+          findUnsubscribeLink(message.textHtml || "") ||
+          message.headers["list-unsubscribe"];
+
+        const emailDate = message.internalDate
+          ? new Date(Number(message.internalDate))
+          : new Date();
+
+        emailsToSave.push({
+          threadId: message.threadId || message.id,
+          messageId: message.id,
+          from: fromEmail,
+          fromName: extractNameFromEmail(message.headers.from),
+          fromDomain: extractDomainFromEmail(message.headers.from),
+          to: message.headers.to
+            ? extractEmailAddress(message.headers.to) || message.headers.to
+            : "Missing",
+          date: emailDate,
+          unsubscribeLink,
+          read: !message.labelIds?.includes("UNREAD"),
+          sent: !!message.labelIds?.includes("SENT"),
+          draft: !!message.labelIds?.includes("DRAFT"),
+          inbox: !!message.labelIds?.includes("INBOX"),
+          emailAccountId,
+        });
+
+        // Process for automation rules if AI access is available
+        if (hasAiAccess && hasAutomationRules) {
+          await processHistoryItem(
+            {
+              messageId: message.id,
+              preFetchedMessage: message,
+            },
+            {
+              provider,
+              emailAccount,
+              hasAutomationRules,
+              hasAiAccess,
+              rules: emailAccount.rules,
+              logger,
+            },
+          );
+        }
 
         processedMessages.push({
           id: message.id,
@@ -131,6 +169,15 @@ export const POST = withEmailAccount("user/sync-emails", async (request) => {
         });
         // Continue processing other messages
       }
+    }
+
+    // Save all emails to database
+    if (emailsToSave.length > 0) {
+      logger.info("Saving emails to database", { count: emailsToSave.length });
+      await prisma.emailMessage.createMany({
+        data: emailsToSave,
+        skipDuplicates: true,
+      });
     }
 
     // Update lastSyncedHistoryId
